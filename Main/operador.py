@@ -1,11 +1,27 @@
-from .class_tijolo import ObjQuantico
+from .class_tijolo import ObjQuantico,ObjQuantico_esparso
+
 import numpy as np
+import scipy as sp
 
-def Identidade(N):
-    matriz = np.identity(N)
-    return ObjQuantico(matriz) 
+def Identidade(N,sparsa=False):
+    """
+    Creates an identity matrix of size NxN.
 
-def destruiçao(N):
+    Parameters:
+    N (int): The size of the identity matrix.
+    sparsa (bool): If True, returns a sparse identity matrix. Defaults to False.
+
+    Returns:
+    ObjQuantico or ObjQuantico_esparso: An object containing the identity matrix.
+    """
+    if sparsa ==True:
+        matriz = sp.sparse.identity(N)
+        return ObjQuantico_esparso(matriz)
+    else:
+        matriz = np.identity(N)
+        return ObjQuantico(matriz) 
+
+def destruiçao(N,sparsa=False):
     """Retorna o operador de destruição  que aniquila um foton no estado |n>
     
     Parameters:
@@ -14,11 +30,16 @@ def destruiçao(N):
     Returns:
         ObjQuantico: dt
     """
-    subdiag = np.sqrt(np.arange(1, N))# Monta os elementos na subdiagonal
-    dt      = np.diag(subdiag, k=1) # Operador de destruição
-    return ObjQuantico(dt)
+    if sparsa ==True:
+        subdiag = np.sqrt(np.arange(1, N))
+        matriz  = sp.sparse.diags(subdiag,offsets=1)
+        return ObjQuantico_esparso(matriz)
+    else:
+        subdiag = np.sqrt(np.arange(1, N)) # Monta os elementos na subdiagonal
+        matriz  = np.diag(subdiag, k=1) # Operador de destruição
+        return ObjQuantico(matriz) 
 
-def criaçao(N):
+def criaçao(N,sparsa=False):
     """Retorna o operador de criaçao  que cria um foton no estado |n>
     
     Parameters:
@@ -27,9 +48,9 @@ def criaçao(N):
     Returns:
         ObjQuantico: dt
     """
-    return  destruiçao(N).dag()    
+    return  destruiçao(N,sparsa=sparsa).dag()    
    
-def operador_p(N):
+def operador_p(N,sparsa=False):
     """Retorna o operador de momento
     
     Parameters:
@@ -38,9 +59,9 @@ def operador_p(N):
     Returns:
         ObjQuantico: operador de momento
     """
-    return -1j*(destruiçao(N) - criaçao(N))/np.sqrt(2)   
+    return  -1j*(destruiçao(N,sparsa) - criaçao(N,sparsa))/np.sqrt(2)   
  
-def operador_x(N):
+def operador_x(N,sparsa=False):
     """Retorna o operador de posição
     
     Parameters:
@@ -49,9 +70,9 @@ def operador_x(N):
     Returns:
         ObjQuantico: operador de posição
     """
-    return (destruiçao(N) + criaçao(N))/np.sqrt(2) 
+    return (destruiçao(N,sparsa) + criaçao(N,sparsa))/np.sqrt(2) 
    
-def pauliX():
+def pauliX(sparsa=False):
     """Retorna a matriz de Pauli X
      
      Parameters:
@@ -60,11 +81,19 @@ def pauliX():
      Returns:
          ObjQuantico: Objeto que representa a matriz de Pauli X
     """
-    m = np.array([[ 0, 1 ],[ 1, 0 ]])
     latex_representation = r"$$ \hat{\sigma_x} $$"
-    return ObjQuantico(m,latex_representation)
+    if sparsa ==  False:
+        m = np.array([[ 0, 1 ],[ 1, 0 ]])
+        return ObjQuantico(m,latex_representation)
+    else:
+        # Criando a matriz diretamente no formato esparso COO
+        data = [1, 1]
+        row = [0, 1]
+        col = [1, 0]
+        m   = sp.sparse.coo_array((data, (row, col)), shape=(2, 2))
+        return ObjQuantico_esparso(m,latex_representation) 
 
-def pauliY():
+def pauliY(sparsa=False):
     """Retorna a matriz de Pauli Y
      
      Parameters:
@@ -73,11 +102,21 @@ def pauliY():
      Returns:
          ObjQuantico: Objeto que representa a matriz de Pauli Y
     """
-    m = np.array([[ 0, -1j ],[ 1j, 0 ]])
-    latex_representation = r"$$ \hat{\sigma_y} $$"  
-    return ObjQuantico(m,latex_representation)
+    latex_representation = r"$$ \hat{\sigma_y} $$"
+    
+    if sparsa:
+        # Criando a matriz diretamente no formato esparso COO
+        data = [-1j, 1j]
+        row = [0, 1]
+        col = [1, 0]
+        m   = sp.sparse.coo_array((data, (row, col)), shape=(2, 2))
+        return ObjQuantico_esparso(m, latex_representation)
+    else:
+        # Criando a matriz no formato denso
+        m = np.array([[0, -1j], [1j, 0]])
+        return ObjQuantico(m, latex_representation)
 
-def pauliZ():
+def pauliZ(sparsa=False):
     """Retorna a matriz de Pauli Z
      
     Parameters:
@@ -86,11 +125,21 @@ def pauliZ():
     Returns:
         ObjQuantico: Objeto que representa a matriz de Pauli Z
     """
-    m = np.array([[ 1, 0 ],[ 0, -1 ]])
-    latex_representation = r"$$ \hat{\sigma_z} $$"  
-    return ObjQuantico(m,latex_representation)
-
-def matrizdensidade(probabilities=None, states=None, puro=True):
+    latex_representation = r"$$ \hat{\sigma_z} $$"
+    
+    if sparsa:
+        # Criando a matriz diretamente no formato esparso COO
+        data = [1, -1]
+        row = [0, 1]
+        col = [0, 1]
+        m   =  sp.sparse.coo_array((data, (row, col)), shape=(2, 2))
+        return ObjQuantico_esparso(m, latex_representation)
+    else:
+        # Criando a matriz no formato denso
+        m = np.array([[1, 0], [0, -1]])
+        return ObjQuantico(m, latex_representation)
+    
+def matrizdensidade(probabilities=None, estados=None, puro=True,sparsa=False):
     
     """
     Calcula a matriz densidade de um sistema quântico.
@@ -107,22 +156,29 @@ def matrizdensidade(probabilities=None, states=None, puro=True):
         ValueError: Se as probabilidades não somarem 1 ou se algum estado não estiver normalizado.
     """
     if puro == True:
-        return state*state.dag()
+        rho = estados*estados.dag()
+        if sparsa==True:
+            return ObjQuantico_esparso(sp.sparse.coo_array(rho.full()))
+        else:
+            return rho
     
-    else:   
+    else:    
         # Verificar se as probabilidades somam 1
         if not np.isclose(sum(probabilities), 1):
             raise ValueError("As probabilidades devem somar 1.")
         
         # Verificar se cada estado está normalizado
-        for state in states:
+        for state in estados:
             if not np.isclose(np.linalg.norm(state.full()), 1):
                 raise ValueError("Todos os estados devem ser normalizados.")
              
         # Criar a matriz densidade
-        rho = np.zeros((states[0].full().shape[0], states[0].full().shape[0]), dtype=complex)
-        
-        for p, state in zip(probabilities, states):
+        dimensao = estados[0].full().shape[0] # pega o primeiro estado, em seguida a dimensao do estado
+        rho = np.zeros((dimensao, dimensao), dtype=complex)
+        for p, state in zip(probabilities, estados):
             rho += p * np.outer(state.full(), state.dag().full())  # |ψ⟩⟨ψ|
-    
-    return rho
+            
+        if sparsa == True:
+            return ObjQuantico_esparso(sp.sparse.coo_array(rho))
+        else:
+            return ObjQuantico(rho)

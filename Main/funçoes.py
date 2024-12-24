@@ -1,5 +1,5 @@
 from scipy.integrate import solve_ivp
-from .class_tijolo import ObjQuantico
+from .class_tijolo import ObjQuantico, ObjQuantico_esparso
 
 import numpy as np
 

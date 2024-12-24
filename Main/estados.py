@@ -1,8 +1,6 @@
-#from class_tijolo import ObjQuantico
-#from operador import destruiçao
-
 import numpy as np
 import scipy
+from .class_tijolo import ObjQuantico
 
 def bases(N,n):
     

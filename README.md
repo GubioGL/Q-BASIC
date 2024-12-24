@@ -11,3 +11,13 @@ Este é um simples simulador de um computador quântico.
 *    Unico qubits.
 *    Feico apenas com numpy.
 
+
+
+
+TODO:
+    *   Implementação do pytorch como backend (Proximo passso). 
+    
+    *   Implementaçao de solve para matrizes esparsas.
+    *   Implementação do cupy como backend. 
+    *   Implementação do Numba como backend. 
+

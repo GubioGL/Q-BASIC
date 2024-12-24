@@ -22,7 +22,6 @@ class ObjQuantico:
         self.dados = data
         self.latex_representation = latex_representation
 
-
     def definir_dados(self, data):
         """
             Define os dados do objeto.
@@ -137,14 +136,7 @@ class ObjQuantico:
             return ObjQuantico(self.dados * other)
         else:
             raise TypeError(f"Multiplicação não suportada entre {type(other)} e ObjQuantico")
-        
-    def __sub__(self, other):
-        if isinstance(other, ObjQuantico):  
-            # Subtração entre duas instâncias de ObjQuantico
-            return ObjQuantico(self.dados - other.dados)
-        else:
-            raise TypeError(f"Subtração não suportada entre {type(other)} e ObjQuantico")
-       
+               
     def __add__(self, other):
         if isinstance(other, ObjQuantico):  
             # Soma os dados de dois objetos ObjQuantico
@@ -179,10 +171,20 @@ class ObjQuantico:
         else:
             raise TypeError(f"Divisão não suportada entre {type(other)} e ObjQuantico")     
     
+    def __pow__(self, power):
+        if not isinstance(power, int) or power < 0:
+            raise ValueError("A potência deve ser um inteiro não negativo.")    
+        # Caso base: potência 0 retorna identidade
+        result = np.eye(len(self.dados))  # Matriz identidade do mesmo tamanho
+        for _ in range(power):
+            result = np.dot(result, self.dados)  # Multiplicação iterativa
+
+        return ObjQuantico(result)
+    
     @property
     def T(self):
         """Propriedade para acessar a transposta de um ObjQuantico."""
-        return self.dag()
+        return self.dados.T
     
     def __matmul__(self, other):
         """Implementa o operador @ para o produto tensorial."""
@@ -191,5 +193,3 @@ class ObjQuantico:
         else:
             raise TypeError(f"Operador @ não suportado entre {type(self)} e {type(other)}")
     
-
-        

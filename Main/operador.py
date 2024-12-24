@@ -1,5 +1,9 @@
-#from class_tijolo import ObjQuantico
+from .class_tijolo import ObjQuantico
 import numpy as np
+
+def Identidade(N):
+    matriz = np.identity(N)
+    return ObjQuantico(matriz) 
 
 def destruiçao(N):
     """Retorna o operador de destruição  que aniquila um foton no estado |n>
@@ -85,7 +89,6 @@ def pauliZ():
     m = np.array([[ 1, 0 ],[ 0, -1 ]])
     latex_representation = r"$$ \hat{\sigma_z} $$"  
     return ObjQuantico(m,latex_representation)
-
 
 def matrizdensidade(probabilities=None, states=None, puro=True):
     

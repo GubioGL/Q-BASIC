@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Q-Basic',
-    version='0.0.1',
+    name='qbasic',
+    version='0.0.3',
     packages=find_packages(),
     install_requires=[
         'tqdm==4.67.1',

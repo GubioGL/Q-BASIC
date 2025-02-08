@@ -260,11 +260,9 @@ class ObjQuantico_esparso:
     def __mul__(self, other):
         # Multiplicação para diferentes tipos
         if isinstance(other, ObjQuantico_esparso):  
+            print("Aqui !")
             # Multiplicação matricial com outra instância de ObjQuantico
-            #data = np.dot(self.dados, other.dados)
-            data = self.dados*other.dados
-            #data = sp.sparse.coo_array(data)
-            return ObjQuantico_esparso(data)
+            return ObjQuantico_esparso(self.dados.dot(other.dados))
         elif np.isscalar(other):  # Multiplicação por escalar
             return ObjQuantico_esparso(self.dados * other)
         else:

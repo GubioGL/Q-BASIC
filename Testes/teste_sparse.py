@@ -11,4 +11,6 @@ a = qb.operador.destruiçao(basefock,sparsa=True)@qb.operador.Identidade(2,spars
 sm = qb.operador.Identidade(basefock,sparsa=True)@(qb.operador.destruiçao(2,sparsa=True).dag())  # sigma-minus operator
 
 H_acomplamento = g * ( a*sm.dag() + a.dag()*sm )
+print(H_acomplamento.full_sparsa())
 print(H_acomplamento.full())
+print(H_acomplamento.dados)

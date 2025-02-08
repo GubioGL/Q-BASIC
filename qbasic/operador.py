@@ -1,5 +1,4 @@
 from .class_tijolo import ObjQuantico,ObjQuantico_esparso
-
 import numpy as np
 import scipy as sp
 

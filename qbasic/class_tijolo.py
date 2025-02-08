@@ -5,7 +5,6 @@ import scipy as sp
 from scipy.linalg import expm
 from IPython.display import display, Math
 
-
 class ObjQuantico:
 
     def __init__(self, data,latex_representation=None):
@@ -262,7 +261,8 @@ class ObjQuantico_esparso:
         # Multiplicação para diferentes tipos
         if isinstance(other, ObjQuantico_esparso):  
             # Multiplicação matricial com outra instância de ObjQuantico
-            data = np.dot(self.dados, other.dados)
+            #data = np.dot(self.dados, other.dados)
+            data = self.dados*other.dados
             #data = sp.sparse.coo_array(data)
             return ObjQuantico_esparso(data)
         elif np.isscalar(other):  # Multiplicação por escalar

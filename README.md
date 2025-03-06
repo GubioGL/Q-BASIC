@@ -11,16 +11,20 @@ Este é um simples simulador de um computador quântico.
 *    Unico qubits.
 *    Feico apenas com numpy.
 
-
-
-
 TODO:
-    *   Erro na multiplicaçao de matrizes esparsas.(Proximo passso).
+    *   Erro na multiplicaçao de matrizes esparsas.(Corrigido).
+
     *   Tutorial do primeiro simulado quântico com qbasic.
+
     *   Implementação do pytorch como backend (Proximo passso). 
+
     *   Implementaçao de solve para matrizes esparsas.
+
     *   Implementação do cupy como backend. 
+
     *   Implementação do Numba como backend. 
+
+
 # Simulador Quântico
 
 **Q-BASIC**  

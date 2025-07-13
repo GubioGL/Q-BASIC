@@ -30,7 +30,7 @@ resultado = qb.funçoes.edo.solve(H, tempo, psi0)
 # Definindo as observáveis
 O1 = a.dag() * a  # Número de fótons no campo
 O2 = sm.dag() * sm  # Sigma_z para o átomo
-
+print(resultado.y.shape)
 valores_esperados = qb.funçoes.Valor_esperado(resultado.y,[O1,O2])
 plt.plot(valores_esperados[0])
 plt.plot(valores_esperados[1])

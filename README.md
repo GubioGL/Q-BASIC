@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Bra.png" alt="Q-BASIC Banner" width="80%"/>
+  <img src="Bra.png" alt="Q-BASIC Banner" width="100%"/>
 </p>
 
 <p align="center">

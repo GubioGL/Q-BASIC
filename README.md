@@ -1,7 +1,5 @@
-# Q-BASIC: Simulador Quântico Brasileiro 🇧🇷⚛️
-
 <p align="center">
-  <img src="https://via.placeholder.com/800x250.png?text=Q-BASIC+Quantum+Simulator" alt="Q-BASIC Banner" width="80%"/>
+  <img src="Bra.png" alt="Q-BASIC Banner" width="80%"/>
 </p>
 
 <p align="center">
@@ -13,11 +11,19 @@
 ---
 
 ## 🚀 Sobre o Projeto
+Temos dis pacotes  **qbasic**   para simular numerica de sistema quantico e o **BRa**  que é voltado par ao ensino.
 
-**Q-BASIC** (Quantum Brazilian Algorithms, Simulations, and Computational tools) é um simulador quântico open-source, feito no Brasil, para ensino, pesquisa e desenvolvimento de algoritmos quânticos. Foco em acessibilidade, didática e flexibilidade para simular sistemas quânticos, computação quântica e redes neurais quânticas.
+### Q-BASIC: Simulador Quântico Brasileiro 🇧🇷⚛️
+(Quantum Brazilian Algorithms, SImulations, and Computational tools) é um simulador quântico open-source, feito no Brasil, para ensino, pesquisa e desenvolvimento de algoritmos quânticos. Foco em acessibilidade, didática e flexibilidade para simular sistemas quânticos, computação quântica e redes neurais quânticas. Uma versão customizada do QuTiP desenvolvida com **NumPy** e **PyTorch**, contendo métodos adicionais criados pelo nosso grupo de pesquisa na UFSCar.  
+
+
+### BRa !psi>
+Uma biblioteca dedicada ao ensino de computação quântica.  
+- Foco total na introdução aos **conceitos básicos** e **algoritmos quânticos**.  
+- Nome inspirado na notação Bra-Ket e no Brasil:  
+- **Bra**: Referência ao Brasil e à notação "bra" da mecânica quântica. 
 
 ---
-
 ## ✨ Principais Recursos
 
 - Simulação de sistemas quânticos (computação e óptica)
@@ -58,11 +64,6 @@ Q-BASIC/
 ├── Testes/                # Testes e exemplos
 └── README.md
 ```
-
-<p align="center">
-  <img src="https://via.placeholder.com/600x200.png?text=Quantum+Circuit+Diagram" alt="Diagrama de Circuito Quântico" width="60%"/>
-</p>
-
 ---
 
 ## 📦 Instalação
@@ -117,6 +118,6 @@ Desenvolvido por Gubio e membros do grupo de pesquisa da UFSCar.
 ---
 
 <p align="center">
-  <b>Q-BASIC: Democratizando a computação quântica no Brasil!</b>
+  <b>Democratizando a computação quântica no Brasil!</b>
 </p>
 

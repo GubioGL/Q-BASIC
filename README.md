@@ -11,17 +11,17 @@
 ---
 
 ## 🚀 Sobre o Projeto
-Temos dis pacotes  **qbasic**   para simular numerica de sistema quantico e o **BRa**  que é voltado par ao ensino.
+Temos dois pacotes **qbasic**   para simular numerica de sistema quantico e o **BRa**  que é voltado para o ensino de algoritimos de computacao quantica.
 
 ### Q-BASIC: Simulador Quântico Brasileiro 🇧🇷⚛️
 (Quantum Brazilian Algorithms, SImulations, and Computational tools) é um simulador quântico open-source, feito no Brasil, para ensino, pesquisa e desenvolvimento de algoritmos quânticos. Foco em acessibilidade, didática e flexibilidade para simular sistemas quânticos, computação quântica e redes neurais quânticas. Uma versão customizada do QuTiP desenvolvida com **NumPy** e **PyTorch**, contendo métodos adicionais criados pelo nosso grupo de pesquisa na UFSCar.  
 
 
 ### BRa !psi>
-Uma biblioteca dedicada ao ensino de computação quântica.  
+Uma biblioteca dedicada ao ensino de algoritimos de computação quântica.  
 - Foco total na introdução aos **conceitos básicos** e **algoritmos quânticos**.  
 - Nome inspirado na notação Bra-Ket e no Brasil:  
-- **Bra**: Referência ao Brasil e à notação "bra" da mecânica quântica. 
+- **BRa**: Referência ao Brasil e à notação "bra" da mecânica quântica. 
 
 ---
 ## ✨ Principais Recursos

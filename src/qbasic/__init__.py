@@ -16,16 +16,24 @@ Módulos
 objeto
     Classe base :class:`ObjQuantico` (estados e operadores, densos ou esparsos).
 estados
-    ``bases``, ``ket``, ``bra``, ``fock``, ``coerente``, ``matriz_densidade``.
+    ``bases``, ``ket``, ``bra``, ``fock``, ``coerente``, ``matriz_densidade``, ``bell``,
+    ``ghz``, ``w``.
 operadores
-    ``identidade``, ``destruicao``, ``criacao``, ``operador_x``, ``operador_p``,
-    ``pauliX``, ``pauliY``, ``pauliZ``, ``tensor``.
+    ``identidade``, ``destruicao``, ``criacao``, ``numero``, ``operador_x``,
+    ``operador_p``, ``pauliX``, ``pauliY``, ``pauliZ``, ``tensor``, ``comutador``,
+    ``anticomutador``.
+portas
+    Portas quânticas: ``hadamard``, ``porta_s``, ``porta_t``, ``fase``, ``rx``, ``ry``,
+    ``rz``, ``cnot``, ``cz``, ``swap``, ``toffoli``, ``porta_controlada``, ``porta_em``.
 medidas
-    ``valor_esperado``, ``valores_esperados``.
+    ``valor_esperado``, ``valores_esperados``, ``probabilidades``, ``amostrar``,
+    ``traco_parcial``, ``pureza``, ``entropia_von_neumann``, ``fidelidade``,
+    ``vetor_bloch``.
 dinamica
-    ``resolver_schrodinger`` e ``Resultado``.
+    ``resolver_schrodinger``, ``resolver_lindblad``, ``liouvilliano`` e ``Resultado``.
 visualizacao
-    Representação em LaTeX.
+    LaTeX, função de Wigner e gráficos (``esfera_bloch``, ``plotar_wigner``,
+    ``plotar_fock``, ``plotar_valores_esperados``; precisam do matplotlib).
 
 Os nomes antigos (``destruiçao``, ``criaçao``, ``Identidade``, ``Fock``,
 ``matrizdensidade``, ``edo``, ``Valor_esperado``, ``ObjQuantico_esparso`` e os módulos
@@ -33,18 +41,31 @@ Os nomes antigos (``destruiçao``, ``criaçao``, ``Identidade``, ``Fock``,
 obsolescência (``DeprecationWarning``).
 """
 
-from . import dinamica, estados, medidas, objeto, operadores, visualizacao
+from . import dinamica, estados, medidas, objeto, operadores, portas, visualizacao
 from ._compat import getattr_obsoleto as _getattr_obsoleto
 from ._compat import importar_sem_aviso as _importar_sem_aviso
 from ._version import __version__
-from .dinamica import Resultado, resolver_schrodinger
-from .estados import bases, bra, coerente, fock, ket, matriz_densidade
-from .medidas import valor_esperado, valores_esperados
+from .dinamica import Resultado, liouvilliano, resolver_lindblad, resolver_schrodinger
+from .estados import bases, bell, bra, coerente, fock, ghz, ket, matriz_densidade, w
+from .medidas import (
+    amostrar,
+    entropia_von_neumann,
+    fidelidade,
+    probabilidades,
+    pureza,
+    traco_parcial,
+    valor_esperado,
+    valores_esperados,
+    vetor_bloch,
+)
 from .objeto import ObjQuantico
 from .operadores import (
+    anticomutador,
+    comutador,
     criacao,
     destruicao,
     identidade,
+    numero,
     operador_p,
     operador_x,
     pauliX,
@@ -52,23 +73,59 @@ from .operadores import (
     pauliZ,
     tensor,
 )
+from .portas import (
+    cnot,
+    cz,
+    fase,
+    hadamard,
+    porta_controlada,
+    porta_em,
+    porta_s,
+    porta_t,
+    rx,
+    ry,
+    rz,
+    swap,
+    toffoli,
+)
+from .visualizacao import (
+    esfera_bloch,
+    plotar_fock,
+    plotar_valores_esperados,
+    plotar_wigner,
+    wigner,
+)
 
 __all__ = [
     "ObjQuantico",
     "Resultado",
     "__version__",
+    "amostrar",
+    "anticomutador",
     "bases",
+    "bell",
     "bra",
+    "cnot",
     "coerente",
+    "comutador",
     "criacao",
+    "cz",
     "destruicao",
     "dinamica",
+    "entropia_von_neumann",
+    "esfera_bloch",
     "estados",
+    "fase",
+    "fidelidade",
     "fock",
+    "ghz",
+    "hadamard",
     "identidade",
     "ket",
+    "liouvilliano",
     "matriz_densidade",
     "medidas",
+    "numero",
     "objeto",
     "operador_p",
     "operador_x",
@@ -76,11 +133,31 @@ __all__ = [
     "pauliX",
     "pauliY",
     "pauliZ",
+    "plotar_fock",
+    "plotar_valores_esperados",
+    "plotar_wigner",
+    "porta_controlada",
+    "porta_em",
+    "porta_s",
+    "porta_t",
+    "portas",
+    "probabilidades",
+    "pureza",
+    "resolver_lindblad",
     "resolver_schrodinger",
+    "rx",
+    "ry",
+    "rz",
+    "swap",
     "tensor",
+    "toffoli",
+    "traco_parcial",
     "valor_esperado",
     "valores_esperados",
+    "vetor_bloch",
     "visualizacao",
+    "w",
+    "wigner",
 ]
 
 

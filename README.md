@@ -100,7 +100,7 @@ pre-commit install
 ## 🧪 Testes
 
 Os testes unitários rodam automaticamente no GitHub Actions a cada commit e pull request
-(Python 3.10 a 3.14, Linux e Windows). Para rodar localmente:
+(Python 3.10 a 3.14; Linux, Windows e macOS). Para rodar localmente:
 
 ```bash
 pytest                                  # todos os testes

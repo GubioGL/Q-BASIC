@@ -32,9 +32,15 @@ class TestBases:
                 produto = escalar(bra_m * qb.bases(N, n, sparsa=sparsa))
                 assert produto == pytest.approx(1.0 if m == n else 0.0)
 
-    @pytest.mark.parametrize(("N", "n"), [(0, 0), (-1, 0), (3, -1)])
-    def test_entradas_invalidas(self, sparsa, N, n):
+    @pytest.mark.parametrize(("N", "n"), [(0, 0), (-1, 0), (2.0, 0), (True, 0)])
+    def test_dimensao_invalida(self, sparsa, N, n):
         with pytest.raises(ValueError, match="N deve ser"):
+            qb.bases(N, n, sparsa=sparsa)
+
+    @pytest.mark.parametrize(("N", "n"), [(3, -1), (2, 2), (2, 5), (4, 1.0)])
+    def test_indice_invalido(self, sparsa, N, n):
+        # Bug B12: antes dava IndexError (denso) ou um vetor nulo silencioso (esparso).
+        with pytest.raises(ValueError, match="índice n"):
             qb.bases(N, n, sparsa=sparsa)
 
 
@@ -60,22 +66,35 @@ class TestKetBra:
         assert escalar(qb.bra("0", sparsa=sparsa) * qb.ket("1", sparsa=sparsa)) == 0
 
     def test_representacao_latex(self, sparsa):
-        # Hoje sai "\ket0" (sem chaves: bug B20); o teste só exige o essencial.
-        latex_ket = qb.ket("0", sparsa=sparsa).latex_representation
-        latex_bra = qb.bra("1", sparsa=sparsa).latex_representation
-        assert r"\ket" in latex_ket
-        assert "0" in latex_ket
-        assert r"\bra" in latex_bra
-        assert "1" in latex_bra
+        # Bug B20: antes a f-string engolia as chaves e gerava "\ket0".
+        assert qb.ket("0", sparsa=sparsa).latex_representation == r"$$ \ket{0} $$"
+        assert qb.bra("1", sparsa=sparsa).latex_representation == r"$$ \bra{1} $$"
+        assert qb.ket("0110", sparsa=sparsa).latex_representation == r"$$ \ket{0110} $$"
+
+    @pytest.mark.parametrize("rotulo", ["00", "01", "10", "11", "101", "0110"])
+    def test_varios_qubits(self, sparsa, rotulo):
+        psi = qb.ket(rotulo, sparsa=sparsa)
+        esperado = qb.tensor([qb.ket(bit) for bit in rotulo])
+        np.testing.assert_allclose(densa(psi), densa(esperado))
+        assert psi.dims == [[2] * len(rotulo), [1] * len(rotulo)]
+        assert psi.formato == ("esparso" if sparsa else "denso")
+
+    @pytest.mark.parametrize("entrada", ["2", "", "0a", 2, -1, 1.5, 1.0, None, [0]])
+    def test_entrada_invalida(self, sparsa, entrada):
+        # Bug B11: antes só imprimia uma mensagem e retornava None.
+        with pytest.raises(ValueError, match="entrada inválida"):
+            qb.ket(entrada, sparsa=sparsa)
+        with pytest.raises(ValueError, match="entrada inválida"):
+            qb.bra(entrada, sparsa=sparsa)
 
 
 class TestFock:
     @pytest.mark.parametrize("n", [0, 2, 4])
     def test_igual_a_bases(self, sparsa, n):
-        np.testing.assert_allclose(densa(qb.Fock(5, n, sparsa=sparsa)), densa(qb.bases(5, n)))
+        np.testing.assert_allclose(densa(qb.fock(5, n, sparsa=sparsa)), densa(qb.bases(5, n)))
 
     def test_padrao_e_o_vacuo(self):
-        np.testing.assert_allclose(densa(qb.Fock(4)), densa(qb.bases(4, 0)))
+        np.testing.assert_allclose(densa(qb.fock(4)), densa(qb.bases(4, 0)))
 
 
 class TestCoerente:
@@ -96,7 +115,7 @@ class TestCoerente:
     @pytest.mark.parametrize("alpha", ALFAS)
     def test_numero_medio_de_fotons(self, sparsa, alpha):
         psi = qb.coerente(N_COERENTE, alpha, sparsa=sparsa)
-        a = qb.destruiçao(N_COERENTE, sparsa=sparsa)
+        a = qb.destruicao(N_COERENTE, sparsa=sparsa)
         numero_medio = escalar(psi.dag() * (a.dag() * a) * psi)
         assert numero_medio == pytest.approx(abs(alpha) ** 2, abs=1e-10)
 
@@ -104,7 +123,7 @@ class TestCoerente:
     def test_autoestado_do_operador_destruicao(self, alpha):
         # a|alpha> = alpha|alpha> (a menos do truncamento, desprezível aqui).
         psi = qb.coerente(N_COERENTE, alpha)
-        a = qb.destruiçao(N_COERENTE)
+        a = qb.destruicao(N_COERENTE)
         np.testing.assert_allclose(densa(a * psi), alpha * densa(psi), atol=1e-10)
 
     @pytest.mark.parametrize("alpha", ALFAS)
@@ -120,5 +139,16 @@ class TestCoerente:
         )
 
     def test_metodo_invalido(self):
-        with pytest.raises(TypeError, match="operador"):
+        with pytest.raises(ValueError, match="operador"):
             qb.coerente(5, 1.0, metodo="outro")
+
+    @pytest.mark.parametrize(("N", "alpha"), [(400, 12.0), (600, 15 - 5j)])
+    def test_analitico_estavel_para_n_grande(self, N, alpha):
+        # P7: antes, factorial(n) e alpha**n estouravam (inf/inf = nan) para n > 170.
+        psi = densa(qb.coerente(N, alpha, metodo="analitico"))
+        assert np.all(np.isfinite(psi))
+        assert np.linalg.norm(psi) == pytest.approx(1.0, abs=1e-10)
+        a = qb.destruicao(N)
+        assert escalar(qb.ObjQuantico(psi).dag() * a.dag() * a * qb.ObjQuantico(psi)) == (
+            pytest.approx(abs(alpha) ** 2, rel=1e-8)
+        )

@@ -11,25 +11,20 @@ reorganizado. Quase todos rodam duas vezes, com matrizes **densas** e **esparsas
 
 | Arquivo | O que cobre |
 |---|---|
-| `test_objeto.py` | Classes base `ObjQuantico` e `ObjQuantico_esparso`: soma, subtração, produto por escalar, produto matricial (`*`), produto tensorial (`@`), potência, adjunto, traço, autovalores, exponencial, erros de tipo e `repr`. |
-| `test_operadores.py` | Pauli (`σ² = I`, `σxσy = iσz`, anticomutação), criação/destruição (`a\|n⟩ = √n\|n−1⟩`), operador número, `[a, a†]`, posição e momento (`[x, p] = i`), identidade. |
-| `test_estados.py` | `bases`, `ket`, `bra`, `Fock` e estado coerente (normalização, Poisson, `⟨n⟩ = \|α\|²`, `a\|α⟩ = α\|α⟩`, método do operador = método analítico). |
-| `test_matriz_densidade.py` | Estados puros e mistos: traço 1, hermiticidade, positividade, pureza, validação das entradas. |
-| `test_dinamica.py` | Solver da equação de Schrödinger contra soluções analíticas (Rabi, Jaynes-Cummings) e contra `exp(−iHt)`; conservação da norma e das excitações; valores esperados. |
+| `test_objeto.py` | Classe `ObjQuantico`: formatos denso/esparso e conversões, `dims`, `tipo`, aritmética (escalares, mistura de formatos, erros de forma), potência, adjunto, traço, autovalores/autoestados (inclusive os `k` menores no esparso), exponencial, normas, interoperabilidade com NumPy, `repr` e LaTeX. |
+| `test_operadores.py` | Pauli (`σ² = I`, `σxσy = iσz`, anticomutação), criação/destruição (`a\|n⟩ = √n\|n−1⟩`), operador número, `[a, a†]`, posição e momento (`[x, p] = i`), identidade, `tensor`. |
+| `test_estados.py` | `bases`, `ket`/`bra` (inclusive vários qubits, `ket("0110")`), `fock` e estado coerente (normalização, Poisson, `⟨n⟩ = \|α\|²`, `a\|α⟩ = α\|α⟩`, estabilidade para N grande). |
+| `test_matriz_densidade.py` | `matriz_densidade`: estados puros e mistos, traço 1, hermiticidade, positividade, pureza e validação das entradas. |
+| `test_dinamica.py` | `resolver_schrodinger` (métodos `expm`, `RK45`, `DOP853`) contra soluções analíticas (Rabi, Jaynes-Cummings) e contra `exp(−iHt)`; conservação da norma; tempos não uniformes; `Resultado`; o Hamiltoniano esparso não é convertido para denso; valores esperados. |
 | `test_esparso.py` | Equivalência numérica entre os formatos denso e esparso em todas as construções e operações. |
-| `test_compat.py` | Todos os nomes públicos (`qb.destruiçao`, `qb.funçoes.edo`...) continuam existindo; versão do pacote. |
+| `test_compat.py` | Os nomes da versão 0.0.x (`destruiçao`, `Identidade`, `Fock`, `edo.solve`, `Valor_esperado`, `traço()`, módulos `operador`/`funçoes`/`class_tijolo`...) continuam funcionando e avisam o nome novo; o código antigo dos tutoriais roda. |
+| `test_regressoes.py` | Um teste por bug corrigido na 0.1.0 (B2–B20, P7 da seção 1.2 do `PLANO_DE_TRABALHO.md`). |
 | `test_exemplos.py` | Os scripts de `exemplos/` rodam do início ao fim (precisa de matplotlib). |
-| `test_readme.py` | Os blocos ```` ```python ```` do `README.md` rodam. |
-| `test_bugs_conhecidos.py` | Um teste para cada bug da seção 1.2 do `PLANO_DE_TRABALHO.md` (B2–B20, P7). |
+| `test_readme.py` | Os blocos ```` ```python ```` do `README.md` rodam (bug B1). |
 | `auxiliares.py`, `conftest.py` | Funções auxiliares e fixtures. |
 
-## Bugs conhecidos (`xfail`)
-
-Os testes de `test_bugs_conhecidos.py` (e o do README) descrevem o comportamento
-**correto** e estão marcados com `@pytest.mark.xfail`: aparecem como `XFAIL` no
-relatório enquanto o bug existir. Como `xfail_strict = true` no `pyproject.toml`, quando
-um bug for corrigido o teste "passa inesperadamente" (`XPASS`) e a suíte falha: é o
-sinal para remover a marcação `xfail`, e o teste vira um teste normal de regressão.
+Além disso, os exemplos das docstrings (`>>> ...`) são executados como *doctests*
+(`make doctest`), também no CI.
 
 ## Como rodar
 
@@ -39,7 +34,6 @@ pytest                                      # todos os testes
 pytest --cov=qbasic --cov-report=term-missing   # com cobertura (mínimo exigido: 90%)
 pytest tests/test_estados.py -q             # um arquivo
 pytest -k coerente                          # testes cujo nome contém "coerente"
-pytest --runxfail tests/test_bugs_conhecidos.py   # mostra o erro real de cada bug
 ```
 
 Os avisos (`warnings`) são tratados como erros (`filterwarnings = ["error"]` no

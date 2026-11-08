@@ -42,13 +42,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 # Limites inferiores testados no CI (job "dependências mínimas").
-# IPython ainda é obrigatório porque ObjQuantico.__repr__ usa IPython.display;
-# deixa de ser na Fase 4 (item 4.4 do PLANO_DE_TRABALHO.md).
 dependencies = [
     "numpy>=1.23",
     "scipy>=1.10",
-    "sympy>=1.11",
-    "ipython>=8.0",
 ]
 
 [project.optional-dependencies]
@@ -62,7 +58,7 @@ docs = [
     "sphinx-copybutton>=0.5",
     "sphinx-design>=0.5",
 ]
-tutorial = ["jupyterlab>=4.0", "matplotlib>=3.6", "qutip>=5.0"]
+tutorial = ["jupyterlab>=4.0", "matplotlib>=3.6", "sympy>=1.11", "qutip>=5.0"]
 dev = [
     "Q-BASIC[test,plot]",
     "ruff>=0.17",
@@ -92,11 +88,8 @@ addopts = ["-ra", "--strict-markers", "--strict-config"]
 # Um teste marcado como xfail que passar vira erro: assim, quando um bug
 # conhecido for corrigido, o teste avisa para remover a marcação.
 xfail_strict = true
-filterwarnings = [
-    "error",
-    # sympy < 1.13 usa APIs do mpmath >= 1.4 marcadas como obsoletas (não afeta o Q-BASIC).
-    "ignore::DeprecationWarning:mpmath",
-]
+filterwarnings = ["error"]
+doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 
 [tool.coverage.run]
 branch = true

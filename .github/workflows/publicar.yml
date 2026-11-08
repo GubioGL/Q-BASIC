@@ -1,0 +1,65 @@
+# Publica o Q-BASIC no PyPI automaticamente quando uma release é publicada no GitHub.
+#
+# Passo a passo e configuração inicial (uma vez só): docs/publicacao.md
+# Resumo: atualize a versão em src/qbasic/_version.py, faça o merge na main e crie
+# uma release com a tag v<versão> (ex.: v0.1.0). Este workflow então:
+#   1. roda toda a suíte de testes (testes.yml);
+#   2. confere se a tag bate com a versão do pacote;
+#   3. gera o sdist e o wheel;
+#   4. envia ao PyPI via Trusted Publishing (sem senha ou token guardado no GitHub).
+name: Publicar no PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    name: Testes
+    uses: ./.github/workflows/testes.yml
+
+  construir:
+    name: Construir o pacote
+    needs: testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Conferir se a tag da release corresponde à versão do pacote
+        run: |
+          VERSAO=$(grep -oP '__version__ = "\K[^"]+' src/qbasic/_version.py)
+          echo "Versão do pacote: ${VERSAO} | tag da release: ${GITHUB_REF_NAME}"
+          if [ "${GITHUB_REF_NAME#v}" != "${VERSAO}" ]; then
+            echo "::error::A tag ${GITHUB_REF_NAME} não corresponde à versão ${VERSAO} de src/qbasic/_version.py. Use a tag v${VERSAO}."
+            exit 1
+          fi
+      - name: Gerar sdist e wheel
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pacotes
+          path: dist/
+
+  publicar:
+    name: Enviar ao PyPI
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/Q-BASIC/
+    permissions:
+      id-token: write  # obrigatório para o Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: pacotes
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,6 +1,7 @@
 # Plano de trabalho — reestruturação do Q-BASIC
 
-> Documento de planejamento. **Nada foi alterado na biblioteca ainda.**
+> **Status (08/11/2026):** Fases 1, 2 e 3 concluídas e a publicação automática no PyPI
+> (item 11.5) configurada. As decisões estão registradas na seção 2.
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -8,7 +9,7 @@ Legenda: `[ ]` a fazer · `[x]` feito · `(opcional)` só se você quiser · **D
 
 ---
 
-## 1. Diagnóstico — o que existe hoje
+## 1. Diagnóstico — como o projeto estava antes da Fase 1
 
 ### 1.1 Inventário
 
@@ -28,38 +29,43 @@ Legenda: `[ ]` a fazer · `[x]` feito · `(opcional)` só se você quiser · **D
 
 ### 1.2 Bugs confirmados (executei a biblioteca para verificar)
 
-| # | Onde | Problema | Efeito |
+Cada bug tem um teste em `tests/test_bugs_conhecidos.py` (ou `tests/test_readme.py`),
+marcado como `xfail`: ele falha hoje e vai acusar quando o bug for corrigido.
+
+| # | Onde (`src/qbasic/`) | Problema | Efeito |
 |---|---|---|---|
-| B1 | `README.md:41-48` | O exemplo usa `estado_zero`, `estado_um` e `X`, que **não existem** no pacote. | Quem copia o exemplo recebe `ImportError`. |
-| B2 | `class_tijolo.py:56` | `dim()` usa `len(dados)` → um **bra** de dimensão 4 retorna `1`. | Dimensão errada para bras/vetores-linha. |
-| B3 | `class_tijolo.py:103-112` | `AutoValor_Vetor()` (denso) retorna **só os autovetores**, apesar do nome; a versão esparsa retorna os dois. | Comportamento diferente entre denso e esparso. |
-| B4 | `class_tijolo.py:117-122` | `__repr__` chama `display()` do IPython e converte a matriz inteira para SymPy. | Fora do Jupyter imprime `<IPython...Math object>`; com matrizes grandes fica **muito lento**; IPython vira dependência obrigatória (e não está no `setup.py`). |
-| B5 | `class_tijolo.py:263` | `print("Aqui !")` de depuração esquecido no `__mul__` esparso. | Polui a saída (aparece até ao criar estado coerente esparso). |
-| B6 | `class_tijolo.py:140-172` | `+`/`-` não aceitam escalar; `/` não aceita número complexo nem escalar NumPy; não existe `-A` (`__neg__`) nem `__radd__`. | `H + 1`, `A / 1j`, `-A` dão `TypeError`. |
-| B7 | `class_tijolo.py:168-172` | `2 / A` faz divisão **elemento a elemento** (gera `inf`). | Operação sem sentido físico (deveria ser erro ou inversa). |
+| B1 | `README.md` (Demonstração Rápida) | O exemplo usa `estado_zero`, `estado_um` e `X`, que **não existem** no pacote. | Quem copia o exemplo recebe `ImportError`. |
+| B2 | `class_tijolo.py` — `dim()` | `dim()` usa `len(dados)` → um **bra** de dimensão 4 retorna `1`. | Dimensão errada para bras/vetores-linha. |
+| B3 | `class_tijolo.py` — `AutoValor_Vetor()` | A versão densa retorna **só os autovetores**, apesar do nome; a versão esparsa retorna os dois. | Comportamento diferente entre denso e esparso. |
+| B4 | `class_tijolo.py` — `__repr__` | Chama `display()` do IPython e converte a matriz inteira para SymPy. | Fora do Jupyter imprime `<IPython...Math object>`; com matrizes grandes fica **muito lento**; IPython vira dependência obrigatória. |
+| B5 | `class_tijolo.py` — `ObjQuantico_esparso.__mul__` | `print("Aqui !")` de depuração esquecido. | Polui a saída (aparece até ao criar estado coerente esparso). |
+| B6 | `class_tijolo.py` — `__add__`, `__sub__`, `__truediv__` | `+`/`-` não aceitam escalar; `/` não aceita número complexo nem escalar NumPy; não existe `-A` (`__neg__`) nem `__radd__`. | `H + 1`, `A / 1j`, `-A` dão `TypeError`. |
+| B7 | `class_tijolo.py` — `__rtruediv__` | `2 / A` faz divisão **elemento a elemento** (gera `inf`). | Operação sem sentido físico (deveria ser erro ou inversa). |
 | B8 | `class_tijolo.py` (geral) | Não dá para misturar denso com esparso (`A_denso * B_esparso` → `TypeError`). | Usuário tem de escolher um formato para tudo. |
-| B9 | `class_tijolo.py:70-79` | `traço()` descarta a parte imaginária silenciosamente. | Traço de operador não-hermitiano fica errado. |
-| B10 | `class_tijolo.py:58-68` | `dag()` perde a representação LaTeX. | Pequeno, mas inconsistente. |
-| B11 | `estados.py:49-60, 77-88` | `ket('2')` só faz `print` e retorna `None`; `ket(1.5)` é aceito. | Erros silenciosos, aparecem depois em outro lugar. |
-| B12 | `estados.py:21` | `bases(2, 5)` não valida `n < N` → `IndexError` genérico. | Mensagem de erro ruim. |
-| B13 | `funçoes.py:16` | `if t_span == None` quebra quando `t_span` é array NumPy. | `ValueError` ao passar `t_span=np.array([0, 1])`. |
-| B14 | `funçoes.py:13-31` | Tolerâncias padrão do RK45 (`rtol=1e-3`) → a norma do estado não se conserva: ⟨σz⟩ chegou a **1.00048** (> 1, fisicamente impossível). | Resultados de dinâmica imprecisos. |
-| B15 | `funçoes.py:28` | O solver chama `.full()` no Hamiltoniano → **matriz esparsa vira densa**. | O modo esparso não traz ganho nenhum na dinâmica. |
-| B16 | `funçoes.py:6` | `class edo(ObjQuantico)` herda de `ObjQuantico` sem motivo. | Design confuso. |
-| B17 | `setup.py:10` | `torch==2.5.1+cu118` não existe no PyPI; `numpy`, `IPython` e `matplotlib` não estão listados; tudo fixado com `==`. | `pip install` **falha**. |
-| B18 | `README.md` | Badge de licença aponta para `LICENSE` inexistente; `requirements.txt` inexistente; URL de clone é placeholder; e-mails diferentes no README e no `setup.py`. | Aparência pouco profissional. |
+| B9 | `class_tijolo.py` — `traço()` | Descarta a parte imaginária silenciosamente. | Traço de operador não-hermitiano fica errado. |
+| B10 | `class_tijolo.py` — `dag()` | Perde a representação LaTeX. | Pequeno, mas inconsistente. |
+| B11 | `estados.py` — `ket()`, `bra()` | `ket('2')` só faz `print` e retorna `None`; `ket(1.5)` é aceito. | Erros silenciosos, aparecem depois em outro lugar. |
+| B12 | `estados.py` — `bases()` | Não valida `n < N`: no denso dá `IndexError` genérico; no **esparso devolve um vetor nulo sem avisar**. | Mensagem de erro ruim / resultado errado silencioso. |
+| B13 | `funçoes.py` — `edo.solve` | `if t_span == None` quebra quando `t_span` é array NumPy. | `ValueError` ao passar `t_span=np.array([0, 1])`. |
+| B14 | `funçoes.py` — `edo.solve` | Tolerâncias padrão do RK45 (`rtol=1e-3`) → a norma do estado não se conserva: ⟨σz⟩ chegou a **1.00048** (> 1, fisicamente impossível). | Resultados de dinâmica imprecisos. |
+| B15 | `funçoes.py` — `edo.solve` | Chama `.full()` no Hamiltoniano → **matriz esparsa vira densa**. | O modo esparso não traz ganho nenhum na dinâmica. |
+| B16 | `funçoes.py` — `class edo` | Herda de `ObjQuantico` sem motivo. | Design confuso. |
+| B17 | `setup.py` (removido) | `torch==2.5.1+cu118` não existe no PyPI; `numpy`, `IPython` e `matplotlib` não estavam listados; tudo fixado com `==`. | `pip install` falhava. **✅ Resolvido na Fase 1** (`pyproject.toml`). |
+| B18 | `README.md` | Badge de licença apontava para `LICENSE` inexistente; `requirements.txt` inexistente; URL de clone placeholder; e-mails diferentes. | **✅ Resolvido na Fase 1** (falta só o B1). |
+| B19 | `operador.py` — `matrizdensidade()` | Com listas de tamanhos diferentes, o `zip` ignora o que sobra (ex.: 2 probabilidades e 1 estado → traço 0,5). | Matriz densidade errada sem aviso. *(encontrado pelo linter na Fase 1)* |
+| B20 | `estados.py` — `ket()`, `bra()` | A f-string engole as chaves: o LaTeX sai `\ket0` em vez de `\ket{0}`. | Só funciona para rótulos de um caractere. *(encontrado pelos testes na Fase 2)* |
 
 ### 1.3 Problemas de performance (otimização)
 
-| # | Onde | Hoje | Proposta |
+| # | Onde (`src/qbasic/`) | Hoje | Proposta |
 |---|---|---|---|
-| P1 | `funçoes.py:47-71` | `Valor_esperado` faz laço Python sobre cada instante de tempo. | Uma única chamada vetorizada (`np.einsum`) — ordens de grandeza mais rápido. |
-| P2 | `class_tijolo.py:174-182` | `A**n` faz `n` multiplicações num laço. | `np.linalg.matrix_power` (exponenciação binária, `log n` produtos). |
-| P3 | `class_tijolo.py:199` | Esparso guardado em **COO**, que precisa ser convertido a cada operação. | Guardar em **CSR** (formato certo para produtos e somas). |
-| P4 | `class_tijolo.py:212, 227-233` | `dim()`, autovalores e `__repr__` do esparso convertem para denso. | Usar `shape`; `eigsh`/`eigh` quando possível. |
-| P5 | `class_tijolo.py:81-101` | `eigvals`/`eig` genéricos. | `eigvalsh`/`eigh` para operadores hermitianos (mais rápidos e precisos). |
-| P6 | `funçoes.py` | Só `solve_ivp`. | Para H independente do tempo: `expm_multiply` (exato e funciona com esparso). |
-| P7 | `estados.py:136` | `factorial(n)` estoura para n > 170 e `alpha**n` pode estourar. | Calcular em log (`gammaln`) — estável para qualquer N. |
+| P1 | `funçoes.py` — `Valor_esperado` | `Valor_esperado` faz laço Python sobre cada instante de tempo. | Uma única chamada vetorizada (`np.einsum`) — ordens de grandeza mais rápido. |
+| P2 | `class_tijolo.py` — `__pow__` | `A**n` faz `n` multiplicações num laço. | `np.linalg.matrix_power` (exponenciação binária, `log n` produtos). |
+| P3 | `class_tijolo.py` — `ObjQuantico_esparso.__init__` | Esparso guardado em **COO**, que precisa ser convertido a cada operação. | Guardar em **CSR** (formato certo para produtos e somas). |
+| P4 | `class_tijolo.py` — `dim()`, autovalores e `__repr__` do esparso | `dim()`, autovalores e `__repr__` do esparso convertem para denso. | Usar `shape`; `eigsh`/`eigh` quando possível. |
+| P5 | `class_tijolo.py` — `Autovalores()`, `Autovetores()` | `eigvals`/`eig` genéricos. | `eigvalsh`/`eigh` para operadores hermitianos (mais rápidos e precisos). |
+| P6 | `funçoes.py` — `edo.solve` | Só `solve_ivp`. | Para H independente do tempo: `expm_multiply` (exato e funciona com esparso). |
+| P7 | `estados.py` — `coerente(metodo="analitico")` | `factorial(n)` estoura para n > 170 e `alpha**n` pode estourar. | Calcular em log (`gammaln`) — estável para qualquer N. |
 
 ### 1.4 Problemas de organização
 
@@ -73,34 +79,22 @@ Legenda: `[ ]` a fazer · `[x]` feito · `(opcional)` só se você quiser · **D
 
 ---
 
-## 2. Decisões que preciso de você antes de começar
+## 2. Decisões (respondidas: "siga as recomendações")
 
-Coloquei minha recomendação em cada uma. Se você disser apenas *"siga as recomendações"*, uso todas.
-
-- **D1 — Nomes com acento** (`destruiçao`, `traço`, `funçoes`...)
-  - **A (recomendado):** passar para nomes sem acento (`destruicao`, `traco`, `funcoes`) e **manter os antigos como apelidos** com aviso de *deprecated* → nada que você já escreveu quebra.
-  - B: manter tudo como está.
-- **D2 — Significado dos operadores** (hoje `*` = produto matricial e `@` = produto tensorial)
-  - **A (recomendado):** manter (assim os tutoriais continuam válidos) e adicionar a função explícita `tensor(A, B, ...)`.
-  - B: seguir o padrão NumPy/QuTiP 5 (`@` = produto matricial) — quebra os tutoriais atuais.
-- **D3 — Denso × esparso**
-  - **A (recomendado):** **uma única classe** `ObjQuantico` com `formato="denso" | "esparso"`, que aceita misturar os dois; `ObjQuantico_esparso` continua existindo como apelido.
-  - B: manter as duas classes separadas, só corrigindo bugs.
-- **D4 — Pacote BRa** (citado no README): criar neste repositório, ou tirar do README por enquanto? *(recomendo tirar do README e deixar como item futuro)*
-- **D5 — Backends PyTorch / CuPy / Numba:** implementar agora ou deixar no roadmap? *(recomendo deixar como dependência opcional e roadmap — o foco agora é qualidade do núcleo)*
-- **D6 — Idioma da documentação HTML:** português, inglês ou os dois? *(recomendo português primeiro; a API já é em português)*
-- **D7 — Paper:** qual o destino?
-  - **A:** artigo didático em português para a **Revista Brasileira de Ensino de Física (RBEF)** — combina com o perfil do projeto.
-  - **B:** artigo curto em inglês para o **Journal of Open Source Software (JOSS)** — dá DOI e é o padrão para citar software.
-  - **C (recomendado):** preparar os dois na pasta `paper/` (RBEF em LaTeX + JOSS em `paper.md`).
-  - Também preciso da **lista de autores e afiliações**.
-- **D8 — Licença:** o README diz MIT. Confirma MIT? (vou criar o arquivo `LICENSE`)
-- **D9 — Python mínimo:** recomendo **3.10+** (testado no CI em 3.10, 3.11, 3.12 e 3.13).
-- **D10 — Layout do pacote:**
-  - **A (recomendado):** layout `src/qbasic/` (padrão do Scientific Python / PyPA; garante que os testes rodem contra o pacote instalado).
-  - B: manter `qbasic/` na raiz (como no REPAQ).
-- **D11 — Publicação no PyPI:** quer um workflow que publique automaticamente ao criar uma *release* no GitHub? Qual nome no PyPI (`qbasic`, `q-basic`...)? *(precisa verificar se o nome está livre)*
-- **D12 — E-mail/contato oficial** para README, `pyproject.toml` e `CITATION.cff` (hoje aparecem `gubio@ufscar.br` e `gubiofisikal@gmail.com`).
+| # | Decisão | Escolha |
+|---|---|---|
+| D1 | Nomes com acento (`destruiçao`, `traço`, `funçoes`) | Passar para nomes sem acento na **Fase 5**, mantendo os antigos como apelidos com aviso de *deprecated*. |
+| D2 | `*` = produto matricial, `@` = produto tensorial | **Manter** e adicionar a função `tensor()` (Fase 5). |
+| D3 | Denso × esparso | **Uma única classe** `ObjQuantico` com formato denso/esparso; `ObjQuantico_esparso` vira apelido (Fase 5). |
+| D4 | Pacote BRa | Retirado do README como pacote existente; agora aparece no **Roadmap**. ✅ |
+| D5 | Backends PyTorch/CuPy/Numba | Dependência opcional (`pip install "Q-BASIC[gpu]"`) e roadmap. ✅ |
+| D6 | Idioma da documentação | **Português** primeiro. |
+| D7 | Paper | **Os dois**: RBEF (LaTeX, português) + JOSS (`paper.md`, inglês). ⚠️ **Pendente: lista de autores e afiliações.** |
+| D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
+| D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
+| D10 | Layout do pacote | **`src/qbasic/`**. ✅ |
+| D11 | PyPI | Nome **`Q-BASIC`** mantido (o nome `qbasic` também está livre, se um dia precisar). Publicação **automática** ao criar uma release no GitHub. ✅ — falta a configuração única no PyPI descrita em `docs/publicacao.md`. |
+| D12 | Contato oficial | `gubiofisikal@gmail.com`. ✅ |
 
 ---
 
@@ -112,11 +106,12 @@ Baseada no REPAQ (zip enviado) + guias da comunidade (Scientific Python Developm
 Q-BASIC/
 ├── .github/
 │   ├── workflows/
-│   │   ├── testes.yml           # pytest + lint em TODO push e pull request
+│   │   ├── testes.yml           # ✅ pytest + lint em TODO push e pull request
+│   │   ├── publicar.yml         # ✅ publica no PyPI ao criar release
 │   │   ├── docs.yml             # gera o site HTML e publica no GitHub Pages
 │   │   ├── tutorial-pdf.yml     # (opcional) gera o PDF do tutorial LaTeX
-│   │   ├── paper.yml            # (opcional) compila o paper
-│   │   └── publicar.yml         # (opcional) publica no PyPI ao criar release
+│   │   └── paper.yml            # (opcional) compila o paper
+│   ├── dependabot.yml           # ✅ atualiza as versões das Actions
 │   ├── ISSUE_TEMPLATE/          # modelos de bug report / pedido de funcionalidade
 │   └── pull_request_template.md
 ├── src/qbasic/
@@ -131,6 +126,7 @@ Q-BASIC/
 ├── tests/                       # testes unitários (pytest)
 ├── docs/                        # Sphinx → site HTML
 │   ├── source/ (conf.py, index, guia, conceitos, tutoriais, api, _static/)
+│   ├── publicacao.md            # ✅ como lançar uma versão no PyPI
 │   ├── Makefile, make.bat, requirements.txt
 ├── tutoriais/
 │   ├── simulador/               # Aulas renomeadas e numeradas (00_introducao.ipynb, ...)
@@ -142,7 +138,8 @@ Q-BASIC/
 ├── paper/                       # artigo científico (LaTeX + bib + figuras)
 ├── exemplos/                    # scripts prontos (ex.: Jaynes-Cummings, vindo de Testes/)
 ├── benchmarks/                  # medições de desempenho (alimentam o paper)
-├── pyproject.toml               # substitui o setup.py
+├── pyproject.toml               # ✅ substitui o setup.py
+├── MANIFEST.in                  # ✅ inclui tests/ e exemplos/ no pacote-fonte
 ├── Makefile                     # atalhos: make test, make docs, make tutorial, make paper
 ├── README.md, LICENSE, CITATION.cff, CHANGELOG.md, CONTRIBUTING.md
 └── .gitignore, .pre-commit-config.yaml
@@ -155,37 +152,37 @@ Q-BASIC/
 A ordem importa: **os testes vêm antes da refatoração**, para garantir que nada da física muda enquanto o código é reorganizado.
 
 ### Fase 1 — Base do projeto (empacotamento e organização)
-- [ ] 1.1 Criar `pyproject.toml` (PEP 621) no lugar do `setup.py`, com dependências corretas e sem versões travadas com `==`: `numpy`, `scipy`, `sympy`, `matplotlib`.
-- [ ] 1.2 Extras opcionais: `[test]` (pytest, pytest-cov), `[docs]` (sphinx...), `[tutorial]` (jupyter, nbconvert...), `[dev]` (ruff, pre-commit), `[gpu]` (torch/cupy — conforme D5). IPython deixa de ser obrigatório.
-- [ ] 1.3 Mover para o layout escolhido em D10 (`src/qbasic/`), preservando o histórico com `git mv`.
-- [ ] 1.4 Definir `__version__` (versão 0.1.0) e a API pública em `__init__.py` (`__all__`).
-- [ ] 1.5 Criar `.gitignore` (Python, Jupyter, LaTeX, builds de docs).
-- [ ] 1.6 Criar `LICENSE` (D8).
-- [ ] 1.7 Mover `Bra.png` para `docs/source/_static/` e ajustar o README.
-- [ ] 1.8 Mover `Testes/*.py` para `exemplos/` (são exemplos, não testes) e `testGPU.ipynb` para `benchmarks/`.
-- [ ] 1.9 Configurar `ruff` (lint + formatação) e `pre-commit`.
-- [ ] 1.10 `Makefile` com atalhos (`make install`, `make test`, `make lint`, `make docs`, `make tutorial`, `make paper`).
+- [x] 1.1 `pyproject.toml` (PEP 621) no lugar do `setup.py`. Dependências: `numpy>=1.23`, `scipy>=1.10`, `sympy>=1.11`, `ipython>=8.0` (limites mínimos testados no CI). O `matplotlib` foi para o extra `[plot]`, porque a biblioteca não o usa.
+- [x] 1.2 Extras opcionais: `[plot]`, `[gpu]` (torch), `[test]`, `[docs]`, `[tutorial]` (jupyterlab, matplotlib, qutip), `[dev]`. **Obs.:** o IPython continua obrigatório até a Fase 4 (item 4.4), porque o `__repr__` atual depende dele.
+- [x] 1.3 Pacote movido para `src/qbasic/` com `git mv` (histórico preservado).
+- [x] 1.4 `__version__ = "0.1.0"` em `src/qbasic/_version.py` (fonte única) e `__all__` em `__init__.py`.
+- [x] 1.5 `.gitignore` (Python, Jupyter, LaTeX, builds de docs).
+- [x] 1.6 `LICENSE` (MIT).
+- [x] 1.7 `Bra.png` movido para `docs/source/_static/`; README atualizado (badges, instalação, estrutura, contato, BRa no roadmap).
+- [x] 1.8 `Testes/*.py` → `exemplos/jaynes_cummings.py` e `exemplos/jaynes_cummings_esparso.py` (com docstring e READMEs); `testGPU.ipynb` → `benchmarks/teste_gpu_pytorch.ipynb`.
+- [x] 1.9 `ruff` (lint + formatação, linha de 100) e `pre-commit`. Código formatado; os bugs B13 e B19 ficaram marcados com `# noqa` até a Fase 4. Notebooks fora do lint até a Fase 7.
+- [x] 1.10 `Makefile` com `help`, `install`, `install-dev`, `test`, `cov`, `lint`, `format`, `build`, `clean`. (`docs`, `tutorial` e `paper` entram nas fases 8, 9 e 10.)
 
 ### Fase 2 — Testes unitários (pytest)
 Testes baseados em **resultados físicos conhecidos**, que continuam válidos depois da refatoração:
-- [ ] 2.1 `tests/conftest.py` com fixtures (tolerâncias, dimensões, estados comuns) e parametrização denso/esparso.
-- [ ] 2.2 `test_objeto.py`: soma, subtração, produto por escalar, produto matricial, tensorial, `dag`, traço, potência, `expM`, autovalores, erros de tipo.
-- [ ] 2.3 `test_operadores.py`: álgebra de Pauli (σx² = I, σxσy = iσz, anticomutadores), `a|n⟩ = √n|n−1⟩`, `a†|n⟩ = √(n+1)|n+1⟩`, `[a, a†] = I` (fora do último nível truncado), hermiticidade de X e P, `[x, p] = i`.
-- [ ] 2.4 `test_estados.py`: normalização, ortogonalidade das bases, validação de entradas, estado coerente (⟨n⟩ = |α|², distribuição de Poisson, `a|α⟩ ≈ α|α⟩`), método "operador" = método "analítico".
-- [ ] 2.5 `test_matriz_densidade.py`: traço 1, hermiticidade, positividade, pureza `Tr(ρ²)` (puro = 1, misto < 1).
-- [ ] 2.6 `test_dinamica.py`: oscilação de Rabi contra a solução analítica, conservação da norma, Jaynes-Cummings (troca de excitação átomo↔cavidade), comparação com `expm`.
-- [ ] 2.7 `test_esparso.py`: toda operação densa = mesma operação esparsa.
-- [ ] 2.8 `test_compat.py`: nomes antigos continuam funcionando (D1).
-- [ ] 2.9 Testes dos bugs B1–B16 (escritos antes da correção — falham agora, passam depois).
-- [ ] 2.10 Meta de cobertura ≥ 90 % e `tests/README.md` explicando o que cada arquivo cobre (como no REPAQ).
+- [x] 2.1 `tests/conftest.py` com fixtures (tolerâncias, dimensões, estados comuns) e parametrização denso/esparso.
+- [x] 2.2 `test_objeto.py`: soma, subtração, produto por escalar, produto matricial, tensorial, `dag`, traço, potência, `expM`, autovalores, erros de tipo.
+- [x] 2.3 `test_operadores.py`: álgebra de Pauli (σx² = I, σxσy = iσz, anticomutadores), `a|n⟩ = √n|n−1⟩`, `a†|n⟩ = √(n+1)|n+1⟩`, `[a, a†] = I` (fora do último nível truncado), hermiticidade de X e P, `[x, p] = i`.
+- [x] 2.4 `test_estados.py`: normalização, ortogonalidade das bases, validação de entradas, estado coerente (⟨n⟩ = |α|², distribuição de Poisson, `a|α⟩ ≈ α|α⟩`), método "operador" = método "analítico".
+- [x] 2.5 `test_matriz_densidade.py`: traço 1, hermiticidade, positividade, pureza `Tr(ρ²)` (puro = 1, misto < 1).
+- [x] 2.6 `test_dinamica.py`: oscilação de Rabi contra a solução analítica, conservação da norma, Jaynes-Cummings (troca de excitação átomo↔cavidade), comparação com `expm`.
+- [x] 2.7 `test_esparso.py`: toda operação densa = mesma operação esparsa.
+- [x] 2.8 `test_compat.py`: todos os nomes públicos atuais (`qb.destruiçao`, `qb.funçoes.edo`...) continuam existindo — é a garantia de compatibilidade para a renomeação da Fase 5.
+- [x] 2.9 `test_bugs_conhecidos.py` + `test_readme.py`: um teste `xfail` estrito por bug (B1–B20 e P7). Extras: `test_exemplos.py` roda os scripts de `exemplos/`.
+- [x] 2.10 Cobertura de **98 %** (mínimo exigido: 90 %, `fail_under` no `pyproject.toml`) e `tests/README.md`. Resultado: 365 testes passando + 39 falhas esperadas (bugs). Avisos viram erro (`filterwarnings = error`).
 
 ### Fase 3 — GitHub Actions (CI)
-- [ ] 3.1 `.github/workflows/testes.yml`: roda em **todo push (qualquer branch) e todo pull request**.
-- [ ] 3.2 Matriz: Python 3.10, 3.11, 3.12, 3.13 no Ubuntu + um job no Windows (por causa dos acentos/caminhos).
-- [ ] 3.3 Passos: instalar `.[test]`, rodar `ruff`, rodar `pytest --cov`, publicar relatório de cobertura como artefato.
-- [ ] 3.4 Badge de status dos testes e de cobertura no README.
-- [ ] 3.5 (opcional) Job que **executa os notebooks dos tutoriais** (`nbmake`) para garantir que continuam rodando.
-- [ ] 3.6 (opcional) Dependabot para atualizar as versões das Actions.
+- [x] 3.1 `.github/workflows/testes.yml`: roda em **todo push (qualquer branch) e todo pull request** (e pode ser disparado à mão).
+- [x] 3.2 Matriz: Python 3.10, 3.11, 3.12, 3.13 e 3.14 no Ubuntu + Python 3.13 no Windows e no macOS.
+- [x] 3.3 Jobs: **lint** (todos os hooks do pre-commit), **testes** (`pytest --cov`, resumo de cobertura na página da execução e `coverage.xml` como artefato), **dependências mínimas** (instala as versões mais antigas aceitas com `uv --resolution lowest-direct`) e **pacote** (gera sdist + wheel, `twine check` e roda os testes contra o wheel instalado num ambiente limpo).
+- [x] 3.4 Badge de status dos testes e da versão no PyPI no README. *(Badge de cobertura exige um serviço externo como o Codecov; por enquanto a cobertura aparece no resumo de cada execução.)*
+- [ ] 3.5 (opcional) Job que **executa os notebooks dos tutoriais** (`nbmake`) — fica para a Fase 7, porque os notebooks dependem do QuTiP e precisam ser atualizados antes.
+- [x] 3.6 Dependabot para atualizar as versões das Actions (`.github/dependabot.yml`, mensal).
 
 ### Fase 4 — Correção dos bugs (seção 1.2)
 - [ ] 4.1 B1 — README com exemplo que funciona (e adicionar `estado_zero`/`estado_um` como atalhos, se fizer sentido).
@@ -195,7 +192,9 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [ ] 4.5 B6, B7, B8 — aritmética completa e consistente (escalares complexos/NumPy, `-A`, `A + c·I`, mistura denso/esparso, mensagens de erro claras).
 - [ ] 4.6 B11, B12 — validação de entradas com `ValueError` claro.
 - [ ] 4.7 B13, B14, B15, B16 — solver: `t_span`, tolerâncias corretas (`rtol`/`atol` adequados), não densificar matrizes esparsas.
-- [ ] 4.8 B17, B18 — dependências e README (resolvidos junto com a Fase 1 e a Fase 10).
+- [x] 4.8 B17, B18 — dependências e README (resolvidos na Fase 1).
+- [ ] 4.9 B19, B20 — tamanho das listas em `matrizdensidade` e LaTeX de `ket`/`bra`.
+- [ ] 4.10 Remover a marcação `xfail` de cada teste em `tests/test_bugs_conhecidos.py` à medida que os bugs forem corrigidos.
 
 ### Fase 5 — Otimização e reorganização do núcleo
 - [ ] 5.1 Classe base única `ObjQuantico` com formato denso/esparso (D3), sem código duplicado.
@@ -258,11 +257,11 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [ ] 10.5 (opcional) `.github/workflows/paper.yml` para compilar o PDF a cada mudança em `paper/`.
 
 ### Fase 11 — Acabamento profissional
-- [ ] 11.1 README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
+- [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
 - [ ] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub).
 - [ ] 11.3 `CHANGELOG.md` (começando na 0.1.0) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
 - [ ] 11.4 Modelos de issue e de pull request.
-- [ ] 11.5 (opcional) `publicar.yml`: publica no PyPI ao criar release (*Trusted Publishing*, sem senha no repositório) — D11.
+- [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
 - [ ] 11.6 (opcional, você faz no site) ligar o repositório ao **Zenodo** para ter DOI a cada release.
 - [ ] 11.7 Apagar este `PLANO_DE_TRABALHO.md` (ou movê-lo para `docs/`) quando tudo estiver concluído.
 
@@ -272,8 +271,8 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 
 | Etapa | Fases | Por quê |
 |---|---|---|
-| 1 | Decisões D1–D12 | Mudam nomes, estrutura e API. |
-| 2 | Fase 1 → Fase 2 → Fase 3 | Projeto instalável + testes + CI: rede de segurança antes de mexer no código. |
+| 1 ✅ | Decisões D1–D12 | Mudam nomes, estrutura e API. |
+| 2 ✅ | Fase 1 → Fase 2 → Fase 3 | Projeto instalável + testes + CI: rede de segurança antes de mexer no código. |
 | 3 | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
 | 4 | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
 | 5 | Fase 7 → Fase 8 → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |

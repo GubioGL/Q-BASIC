@@ -1,0 +1,4 @@
+# Arquivos extras incluídos no pacote-fonte (sdist), para que os testes rodem a partir dele.
+graft tests
+graft exemplos
+global-exclude __pycache__ *.py[cod]

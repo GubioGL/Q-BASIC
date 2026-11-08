@@ -3,7 +3,7 @@
 
 PYTHON ?= python
 
-.PHONY: help install install-dev test doctest bench tutoriais cov lint format build clean
+.PHONY: help install install-dev test doctest bench tutoriais docs cov lint format build clean
 
 help:  ## Mostra esta ajuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "} {printf "  %-12s %s\n", $$1, $$2}'
@@ -27,6 +27,9 @@ bench:  ## Compara o desempenho com a versão anterior à reestruturação
 tutoriais:  ## Executa todos os notebooks dos tutoriais (precisa de ".[tutorial]" e nbmake)
 	MPLBACKEND=Agg $(PYTHON) -m pytest --nbmake --nbmake-timeout=600 tutoriais/simulador tutoriais/computacao_quantica
 
+docs:  ## Gera o site de documentação em docs/_build/html (precisa de ".[docs]")
+	MPLBACKEND=Agg $(PYTHON) -m sphinx -W --keep-going -b html docs/source docs/_build/html
+
 cov:  ## Roda os testes com relatório de cobertura (terminal + htmlcov/)
 	$(PYTHON) -m pytest --cov=qbasic --cov-report=term-missing --cov-report=html
 
@@ -43,5 +46,5 @@ build:  ## Gera o pacote (sdist + wheel) em dist/ e verifica os metadados
 	$(PYTHON) -m twine check --strict dist/*
 
 clean:  ## Remove arquivos gerados
-	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov
+	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov docs/_build docs/source/tutoriais
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +

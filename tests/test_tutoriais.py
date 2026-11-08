@@ -59,6 +59,16 @@ def test_titulo_do_notebook_igual_ao_indice(pasta, capitulo):
 
 
 @pytest.mark.parametrize("caminho", PUBLICADOS, ids=lambda p: p.name)
+def test_um_unico_titulo_de_nivel_1(caminho):
+    # Títulos "# ..." extras viram páginas soltas no menu da documentação.
+    celulas = carregar(caminho)["cells"]
+    for celula in celulas[1:]:
+        if celula["cell_type"] == "markdown":
+            texto = "".join(celula["source"])
+            assert not re.search(r"^# ", texto, re.M), f"{caminho.name}: {texto[:60]!r}"
+
+
+@pytest.mark.parametrize("caminho", PUBLICADOS, ids=lambda p: p.name)
 def test_nao_usa_nomes_obsoletos_da_biblioteca(caminho):
     for fonte in codigo(carregar(caminho)):
         usados = set(re.findall(r"\bqb\.(\w+)", fonte))

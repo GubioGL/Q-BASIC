@@ -4,7 +4,7 @@ O Q-BASIC é publicado no PyPI com o nome **`Q-BASIC`** (`pip install Q-BASIC`);
 módulo importado continua sendo `qbasic` (`import qbasic as qb`).
 
 A publicação é **automática**: ao publicar uma *release* no GitHub, o workflow
-[`.github/workflows/publicar.yml`](../.github/workflows/publicar.yml) roda todos os testes,
+[`.github/workflows/publicar.yml`](https://github.com/GubioGL/Q-BASIC/blob/main/.github/workflows/publicar.yml) roda todos os testes,
 gera o pacote e envia ao PyPI. Não é preciso guardar senha nem token no GitHub: o envio
 usa o **Trusted Publishing** do PyPI (autenticação OIDC entre GitHub e PyPI).
 
@@ -33,7 +33,7 @@ Para autorizar:
 
 ## Como lançar uma nova versão
 
-1. Atualize a versão em [`src/qbasic/_version.py`](../src/qbasic/_version.py) seguindo o
+1. Atualize a versão em [`src/qbasic/_version.py`](https://github.com/GubioGL/Q-BASIC/blob/main/src/qbasic/_version.py) seguindo o
    [versionamento semântico](https://semver.org/lang/pt-BR/):
    `0.1.0 → 0.1.1` (correções), `0.1.0 → 0.2.0` (novidades),
    `0.x → 1.0.0` (API estável).

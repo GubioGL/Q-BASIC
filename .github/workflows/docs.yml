@@ -1,0 +1,55 @@
+# Gera o site de documentação (Sphinx) em todo push e pull request, e o publica no
+# GitHub Pages a partir da main. Configuração inicial (uma vez): Settings → Pages →
+# Build and deployment → Source: GitHub Actions.
+name: Documentação
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    name: Gerar o site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Instalar o pacote com as dependências da documentação
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[docs]"
+      - name: Gerar o HTML (avisos tratados como erros)
+        env:
+          MPLBACKEND: Agg
+        run: python -m sphinx -W --keep-going -b html docs/source docs/_build/html
+      - name: Guardar o site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/_build/html
+
+  publicar:
+    name: Publicar no GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: construir
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - id: publicacao
+        uses: actions/deploy-pages@v5

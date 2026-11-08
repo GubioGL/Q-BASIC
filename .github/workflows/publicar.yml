@@ -1,6 +1,6 @@
 # Publica o Q-BASIC no PyPI automaticamente quando uma release é publicada no GitHub.
 #
-# Passo a passo e configuração inicial (uma vez só): docs/publicacao.md
+# Passo a passo e configuração inicial (uma vez só): docs/source/desenvolvimento/publicacao.md
 # Resumo: atualize a versão em src/qbasic/_version.py, faça o merge na main e crie
 # uma release com a tag v<versão> (ex.: v0.1.0). Este workflow então:
 #   1. roda toda a suíte de testes (testes.yml);

@@ -185,7 +185,8 @@ def cz(controle: int = 0, alvo: int = 1, n_qubits: int = 2, sparsa: bool = False
 def toffoli(
     controles: Sequence[int] = (0, 1), alvo: int = 2, n_qubits: int = 3, sparsa: bool = False
 ) -> ObjQuantico:
-    """Porta de Toffoli (CCNOT): inverte o alvo quando os dois controles estão em |1⟩."""
+    """Porta de Toffoli (CCNOT): inverte o alvo quando os dois controles estão em
+    :math:`|1\\rangle`."""
     return porta_controlada(pauliX(sparsa=sparsa), list(controles), alvo, n_qubits)
 
 

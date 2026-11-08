@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/GubioGL/Q-BASIC/actions/workflows/testes.yml"><img src="https://github.com/GubioGL/Q-BASIC/actions/workflows/testes.yml/badge.svg" alt="Testes"/></a>
+  <a href="https://github.com/GubioGL/Q-BASIC/actions/workflows/docs.yml"><img src="https://github.com/GubioGL/Q-BASIC/actions/workflows/docs.yml/badge.svg" alt="Documentação"/></a>
   <a href="https://pypi.org/project/Q-BASIC/"><img src="https://img.shields.io/pypi/v/Q-BASIC?label=PyPI" alt="PyPI"/></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python 3.10+"/></a>
   <a href="https://github.com/GubioGL/Q-BASIC/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licença-MIT-green" alt="Licença MIT"/></a>
@@ -77,7 +78,7 @@ Q-BASIC/
 ├── exemplos/                    # Scripts prontos (ex.: Jaynes-Cummings)
 ├── benchmarks/                  # Medições de desempenho
 ├── tutoriais/                   # Notebooks: simulador (aulas 0–12) e computação quântica
-├── docs/                        # Documentação (site HTML — em construção)
+├── docs/                        # Documentação (site HTML com Sphinx)
 ├── .github/workflows/           # CI: testes em todo commit e publicação no PyPI
 ├── pyproject.toml               # Configuração do pacote
 ├── CHANGELOG.md                 # Novidades de cada versão e guia de migração
@@ -108,6 +109,9 @@ pre-commit install
 ---
 
 ## 🧑‍💻 Como Usar
+
+📖 **Documentação completa:** <https://gubiogl.github.io/Q-BASIC/> (guia rápido, guia do
+usuário, tutoriais e referência da API).
 
 - Siga os [tutoriais](https://github.com/GubioGL/Q-BASIC/blob/main/tutoriais) (notebooks): da construção do simulador à computação quântica.
 - Rode os scripts de [`exemplos/`](https://github.com/GubioGL/Q-BASIC/blob/main/exemplos).
@@ -159,7 +163,7 @@ Contribuições são super bem-vindas! Se você curte computação quântica, ed
 - Garanta que `pytest` e `make lint` passam
 - Envie um Pull Request
 
-Para lançar uma nova versão no PyPI, veja [`docs/publicacao.md`](https://github.com/GubioGL/Q-BASIC/blob/main/docs/publicacao.md).
+Para lançar uma nova versão no PyPI, veja o [guia de publicação](https://github.com/GubioGL/Q-BASIC/blob/main/docs/source/desenvolvimento/publicacao.md).
 
 ---
 

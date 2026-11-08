@@ -57,6 +57,8 @@ docs = [
     "myst-nb>=1.0",
     "sphinx-copybutton>=0.5",
     "sphinx-design>=0.5",
+    "matplotlib>=3.6",
+    "pyyaml>=6.0",
 ]
 tutorial = ["jupyterlab>=4.0", "matplotlib>=3.6", "sympy>=1.11", "qutip>=5.0"]
 dev = [
@@ -69,6 +71,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/GubioGL/Q-BASIC"
+Documentation = "https://gubiogl.github.io/Q-BASIC/"
 Source = "https://github.com/GubioGL/Q-BASIC"
 Issues = "https://github.com/GubioGL/Q-BASIC/issues"
 Changelog = "https://github.com/GubioGL/Q-BASIC/blob/main/CHANGELOG.md"

@@ -69,6 +69,25 @@ jobs:
           path: coverage.xml
           if-no-files-found: error
 
+  tutoriais:
+    name: Tutoriais (notebooks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Instalar o pacote com as dependências dos tutoriais
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[tutorial]" nbmake
+      - name: Executar todos os notebooks
+        env:
+          MPLBACKEND: Agg
+        run: python -m pytest --nbmake --nbmake-timeout=600 -p no:cacheprovider tutoriais/simulador tutoriais/computacao_quantica
+
   dependencias-minimas:
     name: Dependências mínimas (Python 3.10)
     runs-on: ubuntu-latest

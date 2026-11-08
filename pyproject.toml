@@ -92,13 +92,18 @@ addopts = ["-ra", "--strict-markers", "--strict-config"]
 # Um teste marcado como xfail que passar vira erro: assim, quando um bug
 # conhecido for corrigido, o teste avisa para remover a marcação.
 xfail_strict = true
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # sympy < 1.13 usa APIs do mpmath >= 1.4 marcadas como obsoletas (não afeta o Q-BASIC).
+    "ignore::DeprecationWarning:mpmath",
+]
 
 [tool.coverage.run]
 branch = true
 source = ["qbasic"]
 
 [tool.coverage.report]
+fail_under = 90
 show_missing = true
 skip_empty = true
 exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]
@@ -124,6 +129,10 @@ select = [
     "NPY", # boas práticas NumPy
     "PT",  # boas práticas pytest
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# As mensagens de erro exatas só serão definidas quando os bugs forem corrigidos (Fase 4).
+"tests/test_bugs_conhecidos.py" = ["PT011"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["qbasic"]

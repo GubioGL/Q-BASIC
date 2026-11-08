@@ -1,0 +1,11 @@
+/* Ajustes visuais da documentação do Q-BASIC. */
+.sidebar-logo {
+  max-width: 70%;
+}
+.banner-qbasic img {
+  width: 100%;
+  border-radius: 6px;
+}
+.sd-card-title {
+  font-weight: 600;
+}

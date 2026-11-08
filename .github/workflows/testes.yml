@@ -1,0 +1,131 @@
+# Roda lint e testes unitários em todo push (qualquer branch) e em todo pull request.
+# Também é chamado pelo publicar.yml antes de enviar uma versão ao PyPI.
+name: Testes
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (ruff + pre-commit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Rodar os hooks do pre-commit em todos os arquivos
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pre-commit
+          pre-commit run --all-files --show-diff-on-failure
+
+  testes:
+    name: Python ${{ matrix.python-version }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: windows-latest
+            python-version: "3.13"
+          - os: macos-latest
+            python-version: "3.13"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Instalar o pacote com as dependências de teste
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+      - name: Rodar os testes com cobertura
+        run: python -m pytest --cov=qbasic --cov-report=term-missing --cov-report=xml
+      - name: Rodar os exemplos das docstrings (doctests)
+        run: python -m pytest --doctest-modules src/qbasic -p no:cacheprovider --ignore=src/qbasic/class_tijolo.py --ignore=src/qbasic/operador.py --ignore=src/qbasic/funçoes.py
+      - name: Resumo da cobertura
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        run: python -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+      - name: Guardar o relatório de cobertura
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorio-cobertura
+          path: coverage.xml
+          if-no-files-found: error
+
+  tutoriais:
+    name: Tutoriais (notebooks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Instalar o pacote com as dependências dos tutoriais
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[tutorial]" nbmake
+      - name: Executar todos os notebooks
+        env:
+          MPLBACKEND: Agg
+        run: python -m pytest --nbmake --nbmake-timeout=600 -p no:cacheprovider tutoriais/simulador tutoriais/computacao_quantica
+
+  dependencias-minimas:
+    name: Dependências mínimas (Python 3.10)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
+      - name: Instalar as versões mais antigas aceitas pelo pyproject.toml
+        run: |
+          python -m pip install --upgrade pip uv
+          uv pip install --system --resolution lowest-direct -e ".[test]"
+      - name: Versões instaladas
+        run: python -m pip list
+      - name: Rodar os testes
+        run: python -m pytest
+
+  pacote:
+    name: Construção do pacote (sdist + wheel)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Gerar sdist e wheel
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - name: Testar o wheel instalado num ambiente limpo
+        run: |
+          python -m venv /tmp/venv-wheel
+          /tmp/venv-wheel/bin/python -m pip install "$(ls dist/*.whl)[test]"
+          /tmp/venv-wheel/bin/python -c "import qbasic; print('qbasic', qbasic.__version__, qbasic.__file__)"
+          /tmp/venv-wheel/bin/python -m pytest -p no:cacheprovider
+      - name: Guardar os pacotes gerados
+        uses: actions/upload-artifact@v7
+        with:
+          name: pacotes
+          path: dist/

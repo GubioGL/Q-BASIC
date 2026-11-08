@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "Se você usar o Q-BASIC no seu trabalho, cite-o como abaixo."
+type: software
+title: "Q-BASIC: Quantum Brazilian Algorithms, SImulations, and Computational tools"
+abstract: >-
+  Simulador quântico didático em Python (NumPy/SciPy), feito no Brasil para ensino e
+  pesquisa: estados e operadores densos ou esparsos, equações de Schrödinger e de
+  Lindblad, portas quânticas, medidas, emaranhamento e funções de Wigner.
+authors:
+  - given-names: Gubio
+    family-names: Gomes de Lima
+    email: gubiofisikal@gmail.com
+repository-code: "https://github.com/GubioGL/Q-BASIC"
+url: "https://gubiogl.github.io/Q-BASIC/"
+license: MIT
+version: "0.1.0"
+keywords:
+  - quantum simulation
+  - quantum computing
+  - quantum optics
+  - physics education
+  - simulação quântica
+  - computação quântica

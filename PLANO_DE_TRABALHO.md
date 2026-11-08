@@ -1,7 +1,7 @@
 # Plano de trabalho — reestruturação do Q-BASIC
 
-> **Status (08/11/2026):** Fases 1 a 5 concluídas (versão 0.1.0 pronta, ainda não
-> publicada no PyPI). As decisões estão registradas na seção 2.
+> **Status (08/11/2026):** Fases 1 a 8 concluídas (versão 0.1.0 pronta, ainda não
+> publicada no PyPI). Faltam as Fases 9 (livro em LaTeX), 10 (paper) e 11 (acabamento).
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -96,7 +96,7 @@ da versão antiga, antes da reestruturação.
 | D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
 | D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
 | D10 | Layout do pacote | **`src/qbasic/`**. ✅ |
-| D11 | PyPI | Nome **`Q-BASIC`** mantido (o nome `qbasic` também está livre, se um dia precisar). Publicação **automática** ao criar uma release no GitHub. ✅ — falta a configuração única no PyPI descrita em `docs/publicacao.md`. |
+| D11 | PyPI | Nome **`Q-BASIC`** mantido (o nome `qbasic` também está livre, se um dia precisar). Publicação **automática** ao criar uma release no GitHub. ✅ — falta a configuração única no PyPI descrita em `docs/source/desenvolvimento/publicacao.md`. |
 | D12 | Contato oficial | `gubiofisikal@gmail.com`. ✅ |
 
 ---
@@ -111,7 +111,7 @@ Q-BASIC/
 │   ├── workflows/
 │   │   ├── testes.yml           # ✅ pytest + lint em TODO push e pull request
 │   │   ├── publicar.yml         # ✅ publica no PyPI ao criar release
-│   │   ├── docs.yml             # gera o site HTML e publica no GitHub Pages
+│   │   ├── docs.yml             # ✅ gera o site HTML e publica no GitHub Pages
 │   │   ├── tutorial-pdf.yml     # (opcional) gera o PDF do tutorial LaTeX
 │   │   └── paper.yml            # (opcional) compila o paper
 │   ├── dependabot.yml           # ✅ atualiza as versões das Actions
@@ -127,14 +127,14 @@ Q-BASIC/
 │   ├── visualizacao.py          # representação LaTeX, gráficos
 │   └── _compat.py               # apelidos antigos (destruiçao, funçoes, edo...) com aviso
 ├── tests/                       # testes unitários (pytest)
-├── docs/                        # Sphinx → site HTML
-│   ├── source/ (conf.py, index, guia, conceitos, tutoriais, api, _static/)
+├── docs/                        # ✅ Sphinx → site HTML
+│   ├── source/ (conf.py, index, guia/, api/, desenvolvimento/, _static/)
 │   ├── publicacao.md            # ✅ como lançar uma versão no PyPI
 │   ├── Makefile, make.bat, requirements.txt
 ├── tutoriais/
 │   ├── simulador/               # Aulas renomeadas e numeradas (00_introducao.ipynb, ...)
 │   ├── computacao_quantica/
-│   └── indice.yml               # ordem e títulos dos capítulos (usado pelo script LaTeX e pelos docs)
+│   └── indice.yml               # ✅ ordem e títulos dos capítulos (usado pelo script LaTeX e pelos docs)
 ├── tutorial_latex/              # modelo LaTeX do livro + saída gerada (build/ ignorado no git)
 ├── scripts/
 │   └── gerar_tutorial_latex.py  # notebooks → livro LaTeX/PDF
@@ -184,7 +184,7 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 3.2 Matriz: Python 3.10, 3.11, 3.12, 3.13 e 3.14 no Ubuntu + Python 3.13 no Windows e no macOS.
 - [x] 3.3 Jobs: **lint** (todos os hooks do pre-commit), **testes** (`pytest --cov`, resumo de cobertura na página da execução e `coverage.xml` como artefato), **dependências mínimas** (instala as versões mais antigas aceitas com `uv --resolution lowest-direct`) e **pacote** (gera sdist + wheel, `twine check` e roda os testes contra o wheel instalado num ambiente limpo).
 - [x] 3.4 Badge de status dos testes e da versão no PyPI no README. *(Badge de cobertura exige um serviço externo como o Codecov; por enquanto a cobertura aparece no resumo de cada execução.)*
-- [ ] 3.5 (opcional) Job que **executa os notebooks dos tutoriais** (`nbmake`) — fica para a Fase 7, porque os notebooks dependem do QuTiP e precisam ser atualizados antes.
+- [x] 3.5 Job **tutoriais** que executa todos os notebooks com `nbmake` (feito na Fase 7).
 - [x] 3.6 Dependabot para atualizar as versões das Actions (`.github/dependabot.yml`, mensal).
 
 ### Fase 4 — Correção dos bugs (seção 1.2)
@@ -211,29 +211,29 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 5.9 `benchmarks/bench_nucleo.py` e `benchmarks/comparar_versoes.py` (antes × depois). Ganhos: valor esperado ~20×, solver esparso ~25× (`resolver_schrodinger` ~150×), potência ~10×, `repr` ~100×.
 
 ### Fase 6 — Funcionalidades novas (opcional, você escolhe quais)
-- [ ] 6.1 `tensor()` ✅ (feito na Fase 5), `comutador()`, `anticomutador()`.
-- [ ] 6.2 Traço parcial, fidelidade, entropia de von Neumann, pureza.
-- [ ] 6.3 Portas quânticas (H, S, T, CNOT, rotações) e estados de n qubits — ponte com o tutorial de computação quântica. *(Estados de n qubits já feitos: `ket("0110")`.)*
-- [ ] 6.4 Equação mestra de Lindblad (sistemas abertos, matriz densidade).
-- [ ] 6.5 Funções de visualização (esfera de Bloch, distribuição de Fock, função de Wigner).
-- [ ] 6.6 Backends GPU (PyTorch/CuPy) — conforme D5.
+- [x] 6.1 `tensor()`, `comutador()`, `anticomutador()` e `numero()`.
+- [x] 6.2 `traco_parcial`, `fidelidade` (Uhlmann-Jozsa, entre 0 e 1), `entropia_von_neumann` (em bits), `pureza`; também `probabilidades`, `amostrar` (simula medidas) e `vetor_bloch`.
+- [x] 6.3 Módulo `portas`: `hadamard`, `porta_s`, `porta_t`, `fase`, `rx`/`ry`/`rz`, `cnot`, `cz`, `swap`, `toffoli`, `porta_controlada` e `porta_em` (porta em qubits quaisquer, inclusive não vizinhos); estados `bell`, `ghz`, `w` e `ket("0110")`.
+- [x] 6.4 `resolver_lindblad` (equação mestra; método exato `expm` ou RK) e `liouvilliano`; testado com emissão espontânea, oscilador amortecido e defasagem.
+- [x] 6.5 `wigner` (validada contra a definição por paridade deslocada), `plotar_wigner`, `plotar_fock`, `plotar_valores_esperados` e `esfera_bloch`.
+- [ ] 6.6 Backends GPU (PyTorch/CuPy) — fica no roadmap, conforme D5 (os rascunhos estão em `tutoriais/em_construcao/`).
 
 ### Fase 7 — Tutoriais
-- [ ] 7.1 Renomear e numerar sem acento (`tutoriais/simulador/00_introducao.ipynb`, ...); corrigir os títulos internos ("Aula 7" dentro da `Aula_9`, etc.).
-- [ ] 7.2 Decidir o que fazer com `Aula_1` × `Aula_1V2` (juntar) e com os notebooks quase vazios (`Aula_12`, `EXTRA_numba`, `EXTRA_Cupy`): completar ou mover para "em construção".
-- [ ] 7.3 Criar `tutoriais/indice.yml` (ordem, título e parte de cada capítulo) — usado pelos docs e pelo script LaTeX.
-- [ ] 7.4 Atualizar os notebooks para a API nova (sem quebrar a didática "construindo a classe do zero"). *Hoje eles funcionam, mas mostram avisos de nomes obsoletos (`destruiçao`, `edo.solve`, `class_tijolo`...).*
-- [ ] 7.5 QuTiP como dependência opcional (`[tutorial]`), só para comparação.
-- [ ] 7.6 Limpar saídas pesadas e padronizar metadados (o `Aula_9` tem 390 KB de saída).
-- [ ] 7.7 `tutoriais/README.md` com o índice das aulas.
+- [x] 7.1 Notebooks em `tutoriais/simulador/` (aulas 0 a 12) e `tutoriais/computacao_quantica/`, sem acento, numeração correta e títulos padronizados ("Aula N — ..."); histórico preservado com `git mv`.
+- [x] 7.2 `Aula_1` e `Aula_1V2` unidas em `01_classe_base.ipynb`; PyTorch, Numba e CuPy movidos para `tutoriais/em_construcao/` (fora do índice, da documentação e do CI).
+- [x] 7.3 `tutoriais/indice.yml` com as partes e os capítulos.
+- [x] 7.4 Aulas 10 e 11 na API nova; as aulas 0 a 9 constroem a classe do zero e não usam a biblioteca. **Novos:** Aula 12 (Wigner, gato de Schrödinger, colapso e renascimento, emaranhamento, Lindblad) e Computação quântica 2 (Bloch, portas, medidas, Bell, GHZ/W, teleportação).
+- [x] 7.5 QuTiP (e SymPy) no extra `[tutorial]`.
+- [x] 7.6 Saídas regeneradas com a versão atual, metadados padronizados, células de erro didático com a tag `raises-exception`, títulos com um único nível 1 por notebook.
+- [x] 7.7 `tutoriais/README.md`; `tests/test_tutoriais.py` confere índice, títulos, nomes obsoletos, metadados e erros salvos.
 
 ### Fase 8 — Documentação HTML (site da biblioteca)
-- [ ] 8.1 Sphinx + tema **Furo** (o mesmo do REPAQ), `autodoc` + `napoleon` (API gerada das docstrings), `sphinx-copybutton`, `sphinx-design`.
-- [ ] 8.2 `myst-nb` para os **tutoriais aparecerem como páginas do site** (sem reexecutar).
-- [ ] 8.3 Páginas: Início, Instalação, Guia rápido, Conceitos (estados, operadores, dinâmica, denso × esparso), Tutoriais, Referência da API, Como contribuir, Como citar, Changelog.
-- [ ] 8.4 Identidade visual: logo (`Bra.png`), cores, favicon.
-- [ ] 8.5 `.github/workflows/docs.yml`: gera o site a cada push na `main` e publica no **GitHub Pages** (você precisa ativar o Pages nas configurações do repositório — eu explico o passo).
-- [ ] 8.6 `docs/README.md` com como gerar localmente (`make docs`).
+- [x] 8.1 Sphinx + Furo, `autodoc` + `napoleon` (docstrings NumPy), `sphinx-copybutton`, `sphinx-design`. *(O `intersphinx` ficou de fora para a geração não depender de acesso à internet.)*
+- [x] 8.2 `myst-nb`: os tutoriais aparecem com as saídas salvas, copiados na ordem do `indice.yml`; as páginas do guia são **executadas** a cada geração.
+- [x] 8.3 Páginas: Início, Instalação, Guia rápido, Guia do usuário (objetos, estados e operadores, dinâmica, medidas, computação quântica, visualização), Tutoriais, Referência da API (um arquivo por módulo + nomes antigos), Changelog, Como citar, Desenvolvimento (+ publicação no PyPI).
+- [x] 8.4 Logo e favicon recortados do `Bra.png`; cor principal roxa do "BR" (`#5E17EB`).
+- [x] 8.5 `.github/workflows/docs.yml`: gera o site em todo push/PR (avisos = erro) e publica no GitHub Pages a partir da `main`. ⚠️ **Você precisa ativar uma vez:** Settings → Pages → Source: **GitHub Actions**. Endereço: <https://gubiogl.github.io/Q-BASIC/>.
+- [x] 8.6 `docs/README.md`, `make docs` (raiz) e `docs/Makefile`/`make.bat`.
 
 ### Fase 9 — Script: tutoriais → livro em LaTeX
 - [ ] 9.1 `scripts/gerar_tutorial_latex.py`, que:
@@ -261,10 +261,10 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 
 ### Fase 11 — Acabamento profissional
 - [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
-- [ ] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub).
+- [x] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub) — criado na Fase 8, com a página "Como citar".
 - [ ] 11.3 `CHANGELOG.md` ✅ (criado na Fase 5, com o guia de migração) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
 - [ ] 11.4 Modelos de issue e de pull request.
-- [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
+- [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/source/desenvolvimento/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
 - [ ] 11.6 (opcional, você faz no site) ligar o repositório ao **Zenodo** para ter DOI a cada release.
 - [ ] 11.7 Apagar este `PLANO_DE_TRABALHO.md` (ou movê-lo para `docs/`) quando tudo estiver concluído.
 
@@ -277,8 +277,8 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 | 1 ✅ | Decisões D1–D12 | Mudam nomes, estrutura e API. |
 | 2 ✅ | Fase 1 → Fase 2 → Fase 3 | Projeto instalável + testes + CI: rede de segurança antes de mexer no código. |
 | 3 ✅ | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
-| 4 | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
-| 5 | Fase 7 → Fase 8 → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
+| 4 ✅ | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
+| 5 | Fase 7 ✅ → Fase 8 ✅ → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
 | 6 | Fase 10 → Fase 11 | O paper usa os benchmarks e os tutoriais; o acabamento fecha a versão 0.1.0. |
 
 Cada fase vira um ou mais commits na branch `claude/vibrant-faraday-ucinuf`, com os testes passando antes de seguir para a próxima.

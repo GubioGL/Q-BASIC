@@ -31,7 +31,21 @@ funcionando** (com avisos de obsolescência; veja a tabela de migração abaixo)
 - Aritmética com escalares: `A + c` (= `A + c·I`), `c - A`, `-A`, `A / 1j`.
 - Autovalores dos `k` menores níveis de operadores esparsos grandes
   (`A.autovalores(k=3)`), sem converter para denso.
-- Pacote com `pyproject.toml`, testes (pytest, cobertura de 99 %), integração contínua
+- **Portas quânticas** (`qbasic.portas`): `hadamard`, `porta_s`, `porta_t`, `fase`, `rx`,
+  `ry`, `rz`, `cnot`, `cz`, `swap`, `toffoli`, `porta_controlada` e `porta_em` (aplica uma
+  porta a qubits quaisquer de um registro).
+- Estados `bell`, `ghz` e `w`; operadores `numero`, `comutador` e `anticomutador`.
+- **Sistemas abertos**: `resolver_lindblad` (equação mestra de Lindblad) e `liouvilliano`.
+- **Medidas e emaranhamento**: `probabilidades`, `amostrar` (simula medidas),
+  `traco_parcial`, `pureza`, `entropia_von_neumann`, `fidelidade` e `vetor_bloch`.
+- **Visualização**: `wigner`, `plotar_wigner`, `plotar_fock`, `plotar_valores_esperados` e
+  `esfera_bloch` (precisam do extra `plot`).
+- Tutoriais reorganizados em `tutoriais/` (aulas 0 a 12 e computação quântica), com duas
+  aulas novas e execução automática no CI.
+- Site de documentação (Sphinx) com guia rápido, guia do usuário, tutoriais e referência
+  da API: <https://gubiogl.github.io/Q-BASIC/>.
+- `CITATION.cff` para citar o software.
+- Pacote com `pyproject.toml`, testes (pytest, cobertura de 98 %), integração contínua
   no GitHub Actions, publicação automática no PyPI, exemplos e benchmarks.
 
 ### Alterado

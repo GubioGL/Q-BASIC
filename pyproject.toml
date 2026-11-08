@@ -71,6 +71,7 @@ dev = [
 Homepage = "https://github.com/GubioGL/Q-BASIC"
 Source = "https://github.com/GubioGL/Q-BASIC"
 Issues = "https://github.com/GubioGL/Q-BASIC/issues"
+Changelog = "https://github.com/GubioGL/Q-BASIC/blob/main/CHANGELOG.md"
 
 [tool.setuptools.dynamic]
 version = { attr = "qbasic._version.__version__" }

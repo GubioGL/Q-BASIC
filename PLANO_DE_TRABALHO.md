@@ -1,7 +1,7 @@
 # Plano de trabalho — reestruturação do Q-BASIC
 
-> **Status (08/11/2026):** Fases 1, 2 e 3 concluídas e a publicação automática no PyPI
-> (item 11.5) configurada. As decisões estão registradas na seção 2.
+> **Status (08/11/2026):** Fases 1 a 5 concluídas (versão 0.1.0 pronta, ainda não
+> publicada no PyPI). As decisões estão registradas na seção 2.
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -29,8 +29,9 @@ Legenda: `[ ]` a fazer · `[x]` feito · `(opcional)` só se você quiser · **D
 
 ### 1.2 Bugs confirmados (executei a biblioteca para verificar)
 
-Cada bug tem um teste em `tests/test_bugs_conhecidos.py` (ou `tests/test_readme.py`),
-marcado como `xfail`: ele falha hoje e vai acusar quando o bug for corrigido.
+**✅ Todos corrigidos nas Fases 4 e 5 (versão 0.1.0).** Cada um tem um teste de regressão
+em `tests/test_regressoes.py` (o B1, em `tests/test_readme.py`). Os caminhos abaixo são os
+da versão antiga, antes da reestruturação.
 
 | # | Onde (`src/qbasic/`) | Problema | Efeito |
 |---|---|---|---|
@@ -56,6 +57,8 @@ marcado como `xfail`: ele falha hoje e vai acusar quando o bug for corrigido.
 | B20 | `estados.py` — `ket()`, `bra()` | A f-string engole as chaves: o LaTeX sai `\ket0` em vez de `\ket{0}`. | Só funciona para rótulos de um caractere. *(encontrado pelos testes na Fase 2)* |
 
 ### 1.3 Problemas de performance (otimização)
+
+**✅ Todos resolvidos na Fase 5.** Medições em `benchmarks/resultados.md`.
 
 | # | Onde (`src/qbasic/`) | Hoje | Proposta |
 |---|---|---|---|
@@ -89,7 +92,7 @@ marcado como `xfail`: ele falha hoje e vai acusar quando o bug for corrigido.
 | D4 | Pacote BRa | Retirado do README como pacote existente; agora aparece no **Roadmap**. ✅ |
 | D5 | Backends PyTorch/CuPy/Numba | Dependência opcional (`pip install "Q-BASIC[gpu]"`) e roadmap. ✅ |
 | D6 | Idioma da documentação | **Português** primeiro. |
-| D7 | Paper | **Os dois**: RBEF (LaTeX, português) + JOSS (`paper.md`, inglês). ⚠️ **Pendente: lista de autores e afiliações.** |
+| D7 | Paper | **Os dois**: RBEF (LaTeX, português) + JOSS (`paper.md`, inglês). Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
 | D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
 | D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
 | D10 | Layout do pacote | **`src/qbasic/`**. ✅ |
@@ -185,32 +188,32 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 3.6 Dependabot para atualizar as versões das Actions (`.github/dependabot.yml`, mensal).
 
 ### Fase 4 — Correção dos bugs (seção 1.2)
-- [ ] 4.1 B1 — README com exemplo que funciona (e adicionar `estado_zero`/`estado_um` como atalhos, se fizer sentido).
-- [ ] 4.2 B2 — `dim()` correto para kets, bras e operadores (e guardar `dims` de sistemas compostos, necessário para traço parcial).
-- [ ] 4.3 B3, B5, B9, B10 — `AutoValor_Vetor`, print de depuração, traço complexo, LaTeX no `dag`.
-- [ ] 4.4 B4 — trocar o `__repr__` com `display()` por `_repr_latex_` (o Jupyter renderiza sozinho; fora dele, imprime texto) e limitar o tamanho da matriz exibida.
-- [ ] 4.5 B6, B7, B8 — aritmética completa e consistente (escalares complexos/NumPy, `-A`, `A + c·I`, mistura denso/esparso, mensagens de erro claras).
-- [ ] 4.6 B11, B12 — validação de entradas com `ValueError` claro.
-- [ ] 4.7 B13, B14, B15, B16 — solver: `t_span`, tolerâncias corretas (`rtol`/`atol` adequados), não densificar matrizes esparsas.
+- [x] 4.1 B1 — README com exemplos que funcionam (porta X, estado de Bell, oscilação de Rabi), testados por `tests/test_readme.py`. Não foi preciso criar `estado_zero`/`estado_um`: `ket("0")` já cobre.
+- [x] 4.2 B2 — `dim()` correto para kets, bras e operadores; `dims` guarda os subsistemas (ex.: `[[2, 2], [1, 1]]` para dois qubits), base para o traço parcial.
+- [x] 4.3 B3, B5, B9, B10 — `autoestados()` devolve `(valores, vetores)`; print removido; `traco()` complexo quando preciso; `dag()` mantém o LaTeX (`\ket{x}` ↔ `\bra{x}`).
+- [x] 4.4 B4 — `repr` em texto (sem IPython) e `_repr_latex_` próprio, com matrizes grandes resumidas. IPython e SymPy deixaram de ser dependências.
+- [x] 4.5 B6, B7, B8 — `A + c` (= `A + c·I`), `c - A`, `-A`, divisão por qualquer escalar, `2 / A` gera `TypeError`, denso e esparso misturáveis, `ValueError` claro para formas incompatíveis.
+- [x] 4.6 B11, B12 — `ValueError` com mensagem clara para entradas inválidas.
+- [x] 4.7 B13, B14, B15, B16 — solver novo e `edo.solve` antigo corrigidos (`t_span is None`, `rtol=1e-8`/`atol=1e-10`, sem densificar, `edo` não herda mais de `ObjQuantico`).
 - [x] 4.8 B17, B18 — dependências e README (resolvidos na Fase 1).
-- [ ] 4.9 B19, B20 — tamanho das listas em `matrizdensidade` e LaTeX de `ket`/`bra`.
-- [ ] 4.10 Remover a marcação `xfail` de cada teste em `tests/test_bugs_conhecidos.py` à medida que os bugs forem corrigidos.
+- [x] 4.9 B19, B20 — `matriz_densidade` exige listas do mesmo tamanho; LaTeX `\ket{0}`.
+- [x] 4.10 Marcações `xfail` removidas: `test_bugs_conhecidos.py` virou `test_regressoes.py`.
 
 ### Fase 5 — Otimização e reorganização do núcleo
-- [ ] 5.1 Classe base única `ObjQuantico` com formato denso/esparso (D3), sem código duplicado.
-- [ ] 5.2 Esparso em CSR; conversões só quando necessário (P3, P4).
-- [ ] 5.3 `matrix_power`, `eigh`/`eigvalsh` para hermitianos, `expm_multiply` (P2, P5, P6).
-- [ ] 5.4 Valor esperado vetorizado (P1).
-- [ ] 5.5 Estado coerente analítico numericamente estável (P7).
-- [ ] 5.6 Solver novo com interface mais clara, ex.: `resolver_schrodinger(H, psi0, tempos, observaveis=[...])` devolvendo um objeto `Resultado` (`.tempos`, `.estados`, `.valores_esperados`); `edo.solve` antigo continua funcionando.
-- [ ] 5.7 Nomes sem acento + apelidos antigos com aviso (D1); função `tensor()` (D2).
-- [ ] 5.8 Type hints e docstrings no padrão NumPy em todas as funções públicas (vão direto para a documentação HTML).
-- [ ] 5.9 `benchmarks/`: medir antes × depois (denso vs. esparso, tempo do solver, valor esperado) — esses números entram no paper.
+- [x] 5.1 Classe única `ObjQuantico` (`objeto.py`) com `formato="denso" | "esparso"`; `ObjQuantico_esparso(...)` virou apelido (e `isinstance(A, ObjQuantico_esparso)` continua funcionando).
+- [x] 5.2 Esparso em CSR (`csr_array`); conversões só quando necessário (P3, P4). `dim()`, `shape` e o `repr` não convertem mais para denso.
+- [x] 5.3 `matrix_power`/exponenciação binária, `eigh`/`eigvalsh` para hermitianos, `eigsh` para os `k` menores autovalores no esparso, `expm_multiply` (P2, P5, P6).
+- [x] 5.4 Valor esperado vetorizado com `einsum` (P1); aceita kets, matrizes densidade, listas e `Resultado`.
+- [x] 5.5 Estado coerente analítico em escala logarítmica (`gammaln`), estável para qualquer N (P7).
+- [x] 5.6 `resolver_schrodinger(H, psi0, tempos, observaveis)` → `Resultado` (`.tempos`, `.vetores`, `.estados`, `.valores_esperados`, e `.t`/`.y` como no `solve_ivp`). Método padrão `"expm"` (exato); `"RK45"`, `"DOP853"`, etc. também. `edo.solve` continua funcionando.
+- [x] 5.7 Nomes sem acento e em minúsculas, com os antigos como apelidos que emitem `DeprecationWarning` (tabela no `CHANGELOG.md`); módulos `operadores`, `medidas`, `dinamica`, `visualizacao`; `class_tijolo`, `operador` e `funçoes` viraram módulos de compatibilidade; `tensor()`.
+- [x] 5.8 Type hints e docstrings NumPy nas funções públicas; os exemplos das docstrings rodam como doctests no CI.
+- [x] 5.9 `benchmarks/bench_nucleo.py` e `benchmarks/comparar_versoes.py` (antes × depois). Ganhos: valor esperado ~20×, solver esparso ~25× (`resolver_schrodinger` ~150×), potência ~10×, `repr` ~100×.
 
 ### Fase 6 — Funcionalidades novas (opcional, você escolhe quais)
-- [ ] 6.1 `tensor()`, `comutador()`, `anticomutador()`.
+- [ ] 6.1 `tensor()` ✅ (feito na Fase 5), `comutador()`, `anticomutador()`.
 - [ ] 6.2 Traço parcial, fidelidade, entropia de von Neumann, pureza.
-- [ ] 6.3 Portas quânticas (H, S, T, CNOT, rotações) e estados de n qubits — ponte com o tutorial de computação quântica.
+- [ ] 6.3 Portas quânticas (H, S, T, CNOT, rotações) e estados de n qubits — ponte com o tutorial de computação quântica. *(Estados de n qubits já feitos: `ket("0110")`.)*
 - [ ] 6.4 Equação mestra de Lindblad (sistemas abertos, matriz densidade).
 - [ ] 6.5 Funções de visualização (esfera de Bloch, distribuição de Fock, função de Wigner).
 - [ ] 6.6 Backends GPU (PyTorch/CuPy) — conforme D5.
@@ -219,7 +222,7 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [ ] 7.1 Renomear e numerar sem acento (`tutoriais/simulador/00_introducao.ipynb`, ...); corrigir os títulos internos ("Aula 7" dentro da `Aula_9`, etc.).
 - [ ] 7.2 Decidir o que fazer com `Aula_1` × `Aula_1V2` (juntar) e com os notebooks quase vazios (`Aula_12`, `EXTRA_numba`, `EXTRA_Cupy`): completar ou mover para "em construção".
 - [ ] 7.3 Criar `tutoriais/indice.yml` (ordem, título e parte de cada capítulo) — usado pelos docs e pelo script LaTeX.
-- [ ] 7.4 Atualizar os notebooks para a API nova (sem quebrar a didática "construindo a classe do zero").
+- [ ] 7.4 Atualizar os notebooks para a API nova (sem quebrar a didática "construindo a classe do zero"). *Hoje eles funcionam, mas mostram avisos de nomes obsoletos (`destruiçao`, `edo.solve`, `class_tijolo`...).*
 - [ ] 7.5 QuTiP como dependência opcional (`[tutorial]`), só para comparação.
 - [ ] 7.6 Limpar saídas pesadas e padronizar metadados (o `Aula_9` tem 390 KB de saída).
 - [ ] 7.7 `tutoriais/README.md` com o índice das aulas.
@@ -259,7 +262,7 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 ### Fase 11 — Acabamento profissional
 - [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
 - [ ] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub).
-- [ ] 11.3 `CHANGELOG.md` (começando na 0.1.0) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
+- [ ] 11.3 `CHANGELOG.md` ✅ (criado na Fase 5, com o guia de migração) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
 - [ ] 11.4 Modelos de issue e de pull request.
 - [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
 - [ ] 11.6 (opcional, você faz no site) ligar o repositório ao **Zenodo** para ter DOI a cada release.
@@ -273,7 +276,7 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 |---|---|---|
 | 1 ✅ | Decisões D1–D12 | Mudam nomes, estrutura e API. |
 | 2 ✅ | Fase 1 → Fase 2 → Fase 3 | Projeto instalável + testes + CI: rede de segurança antes de mexer no código. |
-| 3 | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
+| 3 ✅ | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
 | 4 | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
 | 5 | Fase 7 → Fase 8 → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
 | 6 | Fase 10 → Fase 11 | O paper usa os benchmarks e os tutoriais; o acabamento fecha a versão 0.1.0. |

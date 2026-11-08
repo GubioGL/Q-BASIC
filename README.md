@@ -80,6 +80,7 @@ Q-BASIC/
 ├── docs/                        # Documentação (site HTML — em construção)
 ├── .github/workflows/           # CI: testes em todo commit e publicação no PyPI
 ├── pyproject.toml               # Configuração do pacote
+├── CHANGELOG.md                 # Novidades de cada versão e guia de migração
 └── PLANO_DE_TRABALHO.md         # Roteiro da reestruturação
 ```
 ---

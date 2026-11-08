@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Empacotamento
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+.env
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Ferramentas
+.ruff_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Documentação gerada (Sphinx)
+docs/_build/
+docs/build/
+
+# LaTeX (arquivos auxiliares e saídas geradas)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+tutorial_latex/build/
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -12,9 +12,12 @@ import scipy.sparse as sps
 from .objeto import ObjQuantico
 
 __all__ = [
+    "anticomutador",
+    "comutador",
     "criacao",
     "destruicao",
     "identidade",
+    "numero",
     "operador_p",
     "operador_x",
     "pauliX",
@@ -86,6 +89,15 @@ def criacao(N: int, sparsa: bool = False) -> ObjQuantico:
     return destruicao(N, sparsa=sparsa).dag()
 
 
+def numero(N: int, sparsa: bool = False) -> ObjQuantico:
+    """Operador número :math:`\\hat{n} = a^\\dagger a`.
+
+    Satisfaz :math:`\\hat{n}|n\\rangle = n|n\\rangle`.
+    """
+    a = destruicao(N, sparsa=sparsa)
+    return a.dag() * a
+
+
 def operador_x(N: int, sparsa: bool = False) -> ObjQuantico:
     """Operador posição (quadratura) :math:`x = (a + a^\\dagger)/\\sqrt{2}`."""
     a = destruicao(N, sparsa=sparsa)
@@ -133,3 +145,20 @@ def tensor(*objetos: ObjQuantico | Iterable[ObjQuantico]) -> ObjQuantico:
         if not isinstance(objeto, ObjQuantico):
             raise TypeError(f"tensor() aceita apenas ObjQuantico, não {type(objeto).__name__}")
     return reduce(lambda a, b: a @ b, objetos)
+
+
+def comutador(A: ObjQuantico, B: ObjQuantico) -> ObjQuantico:
+    """Comutador :math:`[A, B] = AB - BA`.
+
+    Examples
+    --------
+    >>> import qbasic as qb
+    >>> (qb.comutador(qb.pauliX(), qb.pauliY()) - 2j * qb.pauliZ()).norma()
+    0.0
+    """
+    return A * B - B * A
+
+
+def anticomutador(A: ObjQuantico, B: ObjQuantico) -> ObjQuantico:
+    """Anticomutador :math:`\\{A, B\\} = AB + BA`."""
+    return A * B + B * A

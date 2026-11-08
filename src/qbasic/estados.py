@@ -14,7 +14,7 @@ from ._compat import getattr_obsoleto
 from .objeto import ObjQuantico
 from .operadores import _validar_dimensao, destruicao
 
-__all__ = ["bases", "bra", "coerente", "fock", "ket", "matriz_densidade"]
+__all__ = ["bases", "bell", "bra", "coerente", "fock", "ghz", "ket", "matriz_densidade", "w"]
 
 METODOS_COERENTE = ("operador", "analitico")
 
@@ -122,6 +122,48 @@ def ket(entrada: str | int, sparsa: bool = False) -> ObjQuantico:
 def bra(entrada: str | int, sparsa: bool = False) -> ObjQuantico:
     """Bra de um ou mais qubits, ``ket(entrada).dag()``."""
     return ket(entrada, sparsa=sparsa).dag()
+
+
+BELL = {
+    "phi+": ("00", "11", +1),
+    "phi-": ("00", "11", -1),
+    "psi+": ("01", "10", +1),
+    "psi-": ("01", "10", -1),
+}
+
+
+def bell(tipo: str = "phi+", sparsa: bool = False) -> ObjQuantico:
+    """Estados de Bell (pares maximamente emaranhados de dois qubits).
+
+    Parameters
+    ----------
+    tipo : {"phi+", "phi-", "psi+", "psi-"}
+        :math:`|\\Phi^\\pm\\rangle = (|00\\rangle \\pm |11\\rangle)/\\sqrt{2}` e
+        :math:`|\\Psi^\\pm\\rangle = (|01\\rangle \\pm |10\\rangle)/\\sqrt{2}`.
+    sparsa : bool, optional
+        Se ``True``, usa o formato esparso.
+    """
+    if tipo not in BELL:
+        raise ValueError(f"tipo deve ser um de {sorted(BELL)} (recebido {tipo!r})")
+    a, b, sinal = BELL[tipo]
+    return (ket(a, sparsa=sparsa) + sinal * ket(b, sparsa=sparsa)) / np.sqrt(2)
+
+
+def ghz(n_qubits: int = 3, sparsa: bool = False) -> ObjQuantico:
+    """Estado GHZ, :math:`(|0\\cdots0\\rangle + |1\\cdots1\\rangle)/\\sqrt{2}`."""
+    n_qubits = _validar_dimensao(n_qubits, "n_qubits")
+    return (ket("0" * n_qubits, sparsa=sparsa) + ket("1" * n_qubits, sparsa=sparsa)) / np.sqrt(2)
+
+
+def w(n_qubits: int = 3, sparsa: bool = False) -> ObjQuantico:
+    """Estado W, :math:`(|10\\cdots0\\rangle + |01\\cdots0\\rangle + \\cdots +
+    |0\\cdots01\\rangle)/\\sqrt{n}`."""
+    n_qubits = _validar_dimensao(n_qubits, "n_qubits")
+    termos = [ket("0" * k + "1" + "0" * (n_qubits - k - 1), sparsa=sparsa) for k in range(n_qubits)]
+    soma = termos[0]
+    for termo in termos[1:]:
+        soma = soma + termo
+    return soma / np.sqrt(n_qubits)
 
 
 def coerente(N: int, alpha: complex, metodo: str = "operador", sparsa: bool = False) -> ObjQuantico:

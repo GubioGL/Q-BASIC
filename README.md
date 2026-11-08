@@ -33,16 +33,31 @@
 ## 🖥️ Demonstração Rápida
 
 ```python
-from qbasic.estados import estado_zero, estado_um
-from qbasic.operador import X
+import qbasic as qb
 
-# Estado inicial |0>
-psi = estado_zero()
-
-# Aplica porta X (NOT quântico)
-psi_final = X @ psi
+psi = qb.ket("0")  # estado |0>
+X = qb.pauliX()  # porta NOT quântica
+psi_final = X * psi  # "*" é o produto matricial: X|0> = |1>
 print(psi_final)
+
+bell = (qb.ket("00") + qb.ket("11")) / 2**0.5  # estado de Bell (2 qubits)
+print(qb.valor_esperado(bell, qb.tensor(qb.pauliZ(), qb.pauliZ())))  # correlação <ZZ> = 1
 ```
+
+Dinâmica (oscilação de Rabi de um qubit, com `H = (Ω/2) σx`):
+
+```python
+import numpy as np
+import qbasic as qb
+
+tempos = np.linspace(0, 10, 101)
+H = 0.5 * qb.pauliX()  # Ω = 1
+resultado = qb.resolver_schrodinger(H, qb.ket("0"), tempos, observaveis=[qb.pauliZ()])
+print(resultado.valores_esperados[0][:3])  # <σz>(t) = cos(Ω t)
+```
+
+Convenções: `A * B` é o produto matricial, `A @ B` (ou `qb.tensor(A, B)`) é o produto
+tensorial e `sparsa=True` cria os objetos em formato esparso.
 
 ---
 
@@ -51,10 +66,12 @@ print(psi_final)
 ```text
 Q-BASIC/
 ├── src/qbasic/                  # O pacote (núcleo do simulador)
-│   ├── class_tijolo.py          # Classes base ObjQuantico (densa) e ObjQuantico_esparso
-│   ├── estados.py               # Estados quânticos (bases, ket, bra, Fock, coerente)
-│   ├── operador.py              # Operadores (criação/destruição, Pauli, x, p, ρ)
-│   └── funçoes.py               # Dinâmica (Schrödinger) e valores esperados
+│   ├── objeto.py                # Classe base ObjQuantico (densa ou esparsa)
+│   ├── estados.py               # bases, ket, bra, fock, coerente, matriz_densidade
+│   ├── operadores.py            # identidade, criação/destruição, x, p, Pauli, tensor
+│   ├── medidas.py               # valores esperados
+│   ├── dinamica.py              # resolver_schrodinger (equação de Schrödinger)
+│   └── visualizacao.py          # representação em LaTeX
 ├── tests/                       # Testes unitários (pytest)
 ├── exemplos/                    # Scripts prontos (ex.: Jaynes-Cummings)
 ├── benchmarks/                  # Medições de desempenho
@@ -94,6 +111,11 @@ pre-commit install
 - Explore os notebooks em `Tutorial_simulador/` para aprender e testar exemplos.
 - Rode os scripts de [`exemplos/`](https://github.com/GubioGL/Q-BASIC/blob/main/exemplos).
 - Importe os módulos do pacote `qbasic` para criar seus próprios experimentos.
+
+> **Vindo da versão 0.0.x?** Os nomes com acento ou maiúsculas (`destruiçao`, `criaçao`,
+> `Identidade`, `Fock`, `edo.solve`, `Valor_esperado`...) continuam funcionando, mas
+> mostram um aviso com o nome novo. Veja a tabela completa no
+> [CHANGELOG](https://github.com/GubioGL/Q-BASIC/blob/main/CHANGELOG.md).
 
 ---
 

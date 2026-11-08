@@ -3,7 +3,7 @@
 
 PYTHON ?= python
 
-.PHONY: help install install-dev test cov lint format build clean
+.PHONY: help install install-dev test doctest bench cov lint format build clean
 
 help:  ## Mostra esta ajuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "} {printf "  %-12s %s\n", $$1, $$2}'
@@ -17,6 +17,12 @@ install-dev:  ## Instala em modo editável com ferramentas de desenvolvimento
 
 test:  ## Roda os testes unitários
 	$(PYTHON) -m pytest
+
+doctest:  ## Roda os exemplos das docstrings
+	$(PYTHON) -m pytest --doctest-modules src/qbasic --ignore=src/qbasic/class_tijolo.py --ignore=src/qbasic/operador.py --ignore=src/qbasic/funçoes.py
+
+bench:  ## Compara o desempenho com a versão anterior à reestruturação
+	$(PYTHON) benchmarks/comparar_versoes.py --saida benchmarks/resultados.md
 
 cov:  ## Roda os testes com relatório de cobertura (terminal + htmlcov/)
 	$(PYTHON) -m pytest --cov=qbasic --cov-report=term-missing --cov-report=html

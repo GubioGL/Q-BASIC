@@ -2,13 +2,20 @@
 
 import numpy as np
 
+import qbasic as qb
+
 # Tolerância absoluta padrão para comparações numéricas.
 ATOL = 1e-10
 
 
 def densa(obj) -> np.ndarray:
-    """Matriz NumPy densa de um ``ObjQuantico`` ou ``ObjQuantico_esparso``."""
+    """Matriz NumPy densa de um ``ObjQuantico``."""
     return np.asarray(obj.full())
+
+
+def criar(matriz, sparsa: bool) -> qb.ObjQuantico:
+    """Cria um ``ObjQuantico`` no formato denso ou esparso."""
+    return qb.ObjQuantico(matriz, formato="esparso" if sparsa else "denso")
 
 
 def comutador(A, B) -> np.ndarray:

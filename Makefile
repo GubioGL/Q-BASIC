@@ -3,7 +3,7 @@
 
 PYTHON ?= python
 
-.PHONY: help install install-dev test doctest bench cov lint format build clean
+.PHONY: help install install-dev test doctest bench tutoriais cov lint format build clean
 
 help:  ## Mostra esta ajuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "} {printf "  %-12s %s\n", $$1, $$2}'
@@ -23,6 +23,9 @@ doctest:  ## Roda os exemplos das docstrings
 
 bench:  ## Compara o desempenho com a versão anterior à reestruturação
 	$(PYTHON) benchmarks/comparar_versoes.py --saida benchmarks/resultados.md
+
+tutoriais:  ## Executa todos os notebooks dos tutoriais (precisa de ".[tutorial]" e nbmake)
+	MPLBACKEND=Agg $(PYTHON) -m pytest --nbmake --nbmake-timeout=600 tutoriais/simulador tutoriais/computacao_quantica
 
 cov:  ## Roda os testes com relatório de cobertura (terminal + htmlcov/)
 	$(PYTHON) -m pytest --cov=qbasic --cov-report=term-missing --cov-report=html

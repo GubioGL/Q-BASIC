@@ -69,14 +69,14 @@ Q-BASIC/
 │   ├── objeto.py                # Classe base ObjQuantico (densa ou esparsa)
 │   ├── estados.py               # bases, ket, bra, fock, coerente, matriz_densidade
 │   ├── operadores.py            # identidade, criação/destruição, x, p, Pauli, tensor
-│   ├── medidas.py               # valores esperados
-│   ├── dinamica.py              # resolver_schrodinger (equação de Schrödinger)
-│   └── visualizacao.py          # representação em LaTeX
+│   ├── portas.py                # portas quânticas (H, S, T, rotações, CNOT, ...)
+│   ├── medidas.py               # valores esperados, traço parcial, entropia, fidelidade
+│   ├── dinamica.py              # equações de Schrödinger e de Lindblad
+│   └── visualizacao.py          # LaTeX, Wigner, esfera de Bloch e gráficos
 ├── tests/                       # Testes unitários (pytest)
 ├── exemplos/                    # Scripts prontos (ex.: Jaynes-Cummings)
 ├── benchmarks/                  # Medições de desempenho
-├── Tutorial_simulador/          # Notebooks: construindo um simulador quântico
-├── Tutorial_computação_quantica/# Notebooks: introdução à computação quântica
+├── tutoriais/                   # Notebooks: simulador (aulas 0–12) e computação quântica
 ├── docs/                        # Documentação (site HTML — em construção)
 ├── .github/workflows/           # CI: testes em todo commit e publicação no PyPI
 ├── pyproject.toml               # Configuração do pacote
@@ -109,7 +109,7 @@ pre-commit install
 
 ## 🧑‍💻 Como Usar
 
-- Explore os notebooks em `Tutorial_simulador/` para aprender e testar exemplos.
+- Siga os [tutoriais](https://github.com/GubioGL/Q-BASIC/blob/main/tutoriais) (notebooks): da construção do simulador à computação quântica.
 - Rode os scripts de [`exemplos/`](https://github.com/GubioGL/Q-BASIC/blob/main/exemplos).
 - Importe os módulos do pacote `qbasic` para criar seus próprios experimentos.
 

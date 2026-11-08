@@ -1,0 +1,47 @@
+# Ordem e títulos dos tutoriais.
+# Usado pela documentação HTML (docs/source/conf.py) e pelo livro em LaTeX (Fase 9).
+# Notebooks em "em_construcao/" ficam fora de propósito.
+
+partes:
+  - titulo: "Parte I — Construindo um simulador quântico"
+    pasta: simulador
+    descricao: >-
+      Do zero até a biblioteca: estados, operadores, matriz densidade, Hamiltonianos,
+      dinâmica e matrizes esparsas, comparando com o QuTiP.
+    capitulos:
+      - arquivo: 00_introducao.ipynb
+        titulo: "Aula 0 — Introdução e conceitos básicos"
+      - arquivo: 01_classe_base.ipynb
+        titulo: "Aula 1 — Criando a classe base"
+      - arquivo: 02_soma_subtracao.ipynb
+        titulo: "Aula 2 — Soma e subtração"
+      - arquivo: 03_multiplicacao_divisao.ipynb
+        titulo: "Aula 3 — Multiplicação e divisão"
+      - arquivo: 04_matrizes_de_pauli.ipynb
+        titulo: "Aula 4 — Matrizes de Pauli"
+      - arquivo: 05_estado_coerente.ipynb
+        titulo: "Aula 5 — Estado coerente"
+      - arquivo: 06_matriz_densidade.ipynb
+        titulo: "Aula 6 — Matriz densidade"
+      - arquivo: 07_operadores_x_e_p.ipynb
+        titulo: "Aula 7 — Operadores posição e momento"
+      - arquivo: 08_hamiltoniana.ipynb
+        titulo: "Aula 8 — Hamiltoniana de dois sistemas acoplados"
+      - arquivo: 09_dinamica.ipynb
+        titulo: "Aula 9 — Dinâmica: resolvendo a equação de Schrödinger"
+      - arquivo: 10_testando_a_biblioteca.ipynb
+        titulo: "Aula 10 — Testando a biblioteca"
+      - arquivo: 11_matrizes_esparsas.ipynb
+        titulo: "Aula 11 — Matrizes esparsas"
+      - arquivo: 12_usando_o_qbasic.ipynb
+        titulo: "Aula 12 — Usando o Q-BASIC: Wigner, emaranhamento e sistemas abertos"
+
+  - titulo: "Parte II — Computação quântica"
+    pasta: computacao_quantica
+    descricao: >-
+      Qubits, portas lógicas, medidas, emaranhamento e teleportação.
+    capitulos:
+      - arquivo: 01_primeiro_simulador.ipynb
+        titulo: "Computação quântica 1 — Um primeiro simulador quântico"
+      - arquivo: 02_portas_e_emaranhamento.ipynb
+        titulo: "Computação quântica 2 — Portas, medidas e emaranhamento com o Q-BASIC"

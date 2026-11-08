@@ -16,6 +16,11 @@ reorganizado. Quase todos rodam duas vezes, com matrizes **densas** e **esparsas
 | `test_estados.py` | `bases`, `ket`/`bra` (inclusive vários qubits, `ket("0110")`), `fock` e estado coerente (normalização, Poisson, `⟨n⟩ = \|α\|²`, `a\|α⟩ = α\|α⟩`, estabilidade para N grande). |
 | `test_matriz_densidade.py` | `matriz_densidade`: estados puros e mistos, traço 1, hermiticidade, positividade, pureza e validação das entradas. |
 | `test_dinamica.py` | `resolver_schrodinger` (métodos `expm`, `RK45`, `DOP853`) contra soluções analíticas (Rabi, Jaynes-Cummings) e contra `exp(−iHt)`; conservação da norma; tempos não uniformes; `Resultado`; o Hamiltoniano esparso não é convertido para denso; valores esperados. |
+| `test_portas.py` | Portas de 1 e vários qubits (unitariedade, identidades como `HXH = Z`, tabela-verdade de CNOT/Toffoli, qubits não vizinhos), circuito de Bell, estados de Bell, GHZ e W. |
+| `test_medidas.py` | Probabilidades, amostragem, traço parcial, pureza, entropia, fidelidade (inclusive a fórmula fechada para qubits), vetor de Bloch, comutadores. |
+| `test_lindblad.py` | Equação mestra: emissão espontânea, oscilador amortecido, defasagem, equivalência com Schrödinger sem colapso, traço/hermiticidade/positividade, Liouvilliano. |
+| `test_visualizacao.py` | Função de Wigner (vácuo, Fock, coerente, normalização e comparação com a definição por paridade) e os gráficos. |
+| `test_tutoriais.py` | Tutoriais: índice × arquivos, títulos, um único título de nível 1, nomes obsoletos, metadados, erros salvos só nas células marcadas. |
 | `test_esparso.py` | Equivalência numérica entre os formatos denso e esparso em todas as construções e operações. |
 | `test_compat.py` | Os nomes da versão 0.0.x (`destruiçao`, `Identidade`, `Fock`, `edo.solve`, `Valor_esperado`, `traço()`, módulos `operador`/`funçoes`/`class_tijolo`...) continuam funcionando e avisam o nome novo; o código antigo dos tutoriais roda. |
 | `test_regressoes.py` | Um teste por bug corrigido na 0.1.0 (B2–B20, P7 da seção 1.2 do `PLANO_DE_TRABALHO.md`). |

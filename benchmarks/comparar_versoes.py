@@ -7,7 +7,8 @@ versão em processos separados e escreve uma tabela em Markdown.
 Uso (a partir da raiz do repositório, com o pacote atual instalado)::
 
     python benchmarks/comparar_versoes.py                    # antes = e61545c
-    python benchmarks/comparar_versoes.py --antes <commit> --saida benchmarks/resultados.md
+    python benchmarks/comparar_versoes.py --antes <commit> --saida benchmarks/resultados.md \\
+        --json benchmarks/resultados.json
 
 A versão 0.0.x precisa de ``ipython`` e ``sympy`` instalados (usados no seu ``repr``).
 """
@@ -88,6 +89,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Compara duas versões do Q-BASIC.")
     parser.add_argument("--antes", default=ANTES_PADRAO, help="commit da versão antiga")
     parser.add_argument("--saida", type=Path, help="arquivo Markdown para salvar a tabela")
+    parser.add_argument("--json", type=Path, help="arquivo JSON com as medições das duas versões")
     args = parser.parse_args()
 
     with tempfile.TemporaryDirectory() as pasta:
@@ -100,6 +102,13 @@ def main() -> None:
     print(resultado)
     if args.saida:
         args.saida.write_text(resultado, encoding="utf-8")
+    if args.json:
+        for medicao in (antes, depois):
+            medicao.pop("arquivo", None)  # caminho local, sem interesse para outros
+        dados = {"antes": {"ref": args.antes, **antes}, "depois": depois}
+        args.json.write_text(
+            json.dumps(dados, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
 
 
 if __name__ == "__main__":

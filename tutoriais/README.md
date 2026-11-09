@@ -13,6 +13,9 @@ jupyter lab tutoriais/
 No Google Colab, abra o notebook pelo GitHub (Arquivo → Abrir notebook → GitHub) e rode
 `!pip install "Q-BASIC[tutorial]"` na primeira célula.
 
+Os tutoriais também existem como **livro em PDF**, gerado a partir destes notebooks: veja
+[`tutorial_latex/`](../tutorial_latex/).
+
 Todos os notebooks são executados no CI a cada push, para garantir que continuam
 funcionando. Algumas células mostram um erro **de propósito** (a aula seguinte resolve o
 problema); elas têm a tag `raises-exception`.

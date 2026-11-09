@@ -1,0 +1,40 @@
+% Preâmbulo do livro dos tutoriais (incluído pelo pandoc em header-includes).
+\usepackage{braket}      % \ket{}, \bra{}, \braket{} (notação de Dirac)
+\usepackage{adjustbox}   % reduz matrizes largas para caberem na página
+\usepackage{fvextra}     % quebra de linhas longas em códigos e saídas
+
+% Códigos destacados pelo pandoc: fundo cinza-claro, fonte menor e quebra de linhas longas.
+\usepackage{framed}
+\definecolor{shadecolor}{HTML}{F3F1F8}
+\renewenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{%
+  commandchars=\\\{\},breaklines,breakanywhere,fontsize=\small}
+
+% Saídas das células (texto impresso, matrizes, erros).
+\definecolor{corsaida}{HTML}{8C8C8C}
+\DefineVerbatimEnvironment{saida}{Verbatim}{%
+  breaklines,breakanywhere,fontsize=\footnotesize,frame=leftline,framerule=1.2pt,
+  rulecolor=\color{corsaida},xleftmargin=0.8em,formatcom=\color{black!75}}
+\DefineVerbatimEnvironment{saidaerro}{Verbatim}{%
+  breaklines,breakanywhere,fontsize=\footnotesize,frame=leftline,framerule=1.2pt,
+  rulecolor=\color{red!60!black},xleftmargin=0.8em,formatcom=\color{red!60!black}}
+
+% Cabeçalhos dos capítulos mais compactos.
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\normalfont\Huge\bfseries\color{purple!70!black}}{}{0pt}{}
+\titlespacing*{\chapter}{0pt}{-20pt}{24pt}
+
+% URLs longas podem quebrar em qualquer ponto.
+\usepackage{xurl}
+
+% Cabeçalho: título do capítulo em fonte menor (sem caixa alta) e número da página.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape\nouppercase{\leftmark}}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+% Mais folga para justificar parágrafos com nomes de funções longos (\texttt{...}).
+\setlength{\emergencystretch}{3em}

@@ -1,5 +1,6 @@
-# Compila o artigo (português, LaTeX) e a versão para o JOSS (inglês) quando paper/ muda.
-# Os PDFs ficam nos Artifacts da execução.
+# Gera o rascunho do artigo do JOSS (paper/joss/paper.md) quando paper/ muda.
+# A figura é refeita pela própria biblioteca antes da compilação; o PDF fica nos
+# Artifacts da execução.
 name: Artigo
 
 on:
@@ -17,8 +18,8 @@ permissions:
   contents: read
 
 jobs:
-  artigo:
-    name: Artigo (português)
+  joss:
+    name: Artigo JOSS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -27,31 +28,12 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: pyproject.toml
-      - name: Instalar o LaTeX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends texlive-latex-recommended \
-            texlive-latex-extra texlive-lang-portuguese texlive-fonts-recommended \
-            texlive-science latexmk lmodern
       - name: Instalar o pacote com o matplotlib
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ".[plot]"
-      - name: Gerar as figuras e os números a partir da biblioteca
+      - name: Gerar a figura a partir da biblioteca
         run: python paper/gerar_figuras.py
-      - name: Compilar o PDF
-        run: latexmk -pdf -interaction=nonstopmode -halt-on-error -cd paper/artigo/main.tex
-      - uses: actions/upload-artifact@v7
-        with:
-          name: artigo
-          path: paper/artigo/main.pdf
-          if-no-files-found: error
-
-  joss:
-    name: Versão JOSS (inglês)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
       - name: Gerar o rascunho com a ferramenta do JOSS
         uses: openjournals/openjournals-draft-action@master
         with:

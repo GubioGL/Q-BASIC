@@ -47,8 +47,8 @@ funcionando** (com avisos de obsolescência; veja a tabela de migração abaixo)
 - `CITATION.cff` para citar o software.
 - **Livro dos tutoriais em PDF**: `scripts/gerar_tutorial_latex.py` (ou `make livro`)
   transforma os notebooks num livro em LaTeX; o PDF é gerado no CI e anexado às releases.
-- **Artigo** sobre a biblioteca em `paper/` (português, em LaTeX, e versão em inglês para
-  o JOSS), com figuras e números gerados por `paper/gerar_figuras.py`.
+- **Rascunho do artigo para o JOSS** (em inglês) em `paper/joss/`, com figura gerada por
+  `paper/gerar_figuras.py` e um guia de submissão em `paper/JOSS.md`.
 - Pacote com `pyproject.toml`, testes (pytest, cobertura de 98 %), integração contínua
   no GitHub Actions, publicação automática no PyPI, exemplos e benchmarks.
 

@@ -1,0 +1,73 @@
+{
+  "antes": {
+    "ref": "e61545c",
+    "qbasic": "0.1.0",
+    "python": "3.13.18",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "plataforma": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
+    "casos": {
+      "valor_esperado": {
+        "descricao": "Valor esperado de a†a em 2000 instantes (N = 200)",
+        "segundos": 0.16098194500000318
+      },
+      "potencia": {
+        "descricao": "Potência x**64 de um operador denso 200×200",
+        "segundos": 0.010749371999963842
+      },
+      "hamiltoniano_esparso": {
+        "descricao": "Montar o Hamiltoniano de Jaynes-Cummings esparso (N = 2000)",
+        "segundos": 0.0030978580000464717
+      },
+      "solver_esparso": {
+        "descricao": "edo.solve, Jaynes-Cummings esparso (dimensão 400, α = 8, rtol=1e-8)",
+        "segundos": 18.472495513000013
+      },
+      "coerente_analitico": {
+        "descricao": "Estado coerente pelo método analítico (N = 150)",
+        "segundos": 3.1761000059304934e-05
+      },
+      "repr": {
+        "descricao": "repr() de um operador 40×40 (exibição)",
+        "segundos": 0.010675853999941864
+      }
+    }
+  },
+  "depois": {
+    "qbasic": "0.1.0",
+    "python": "3.13.18",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "plataforma": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
+    "casos": {
+      "valor_esperado": {
+        "descricao": "Valor esperado de a†a em 2000 instantes (N = 200)",
+        "segundos": 0.010450172999981078
+      },
+      "potencia": {
+        "descricao": "Potência x**64 de um operador denso 200×200",
+        "segundos": 0.0014078680000011445
+      },
+      "hamiltoniano_esparso": {
+        "descricao": "Montar o Hamiltoniano de Jaynes-Cummings esparso (N = 2000)",
+        "segundos": 0.0019659790000332578
+      },
+      "solver_esparso": {
+        "descricao": "edo.solve, Jaynes-Cummings esparso (dimensão 400, α = 8, rtol=1e-8)",
+        "segundos": 0.7037079379999795
+      },
+      "coerente_analitico": {
+        "descricao": "Estado coerente pelo método analítico (N = 150)",
+        "segundos": 2.358300002924807e-05
+      },
+      "repr": {
+        "descricao": "repr() de um operador 40×40 (exibição)",
+        "segundos": 0.0001304509999044967
+      },
+      "resolver_expm": {
+        "descricao": "resolver_schrodinger (expm, exato), mesmo sistema de solver_esparso",
+        "segundos": 0.10434308899993994
+      }
+    }
+  }
+}

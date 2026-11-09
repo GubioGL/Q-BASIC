@@ -61,6 +61,8 @@ docs = [
     "pyyaml>=6.0",
 ]
 tutorial = ["jupyterlab>=4.0", "matplotlib>=3.6", "sympy>=1.11", "qutip>=5.0"]
+# Livro em LaTeX gerado a partir dos tutoriais (o PDF também precisa de XeLaTeX).
+livro = ["pypandoc_binary>=1.13", "pyyaml>=6.0"]
 dev = [
     "Q-BASIC[test,plot]",
     "ruff>=0.17",

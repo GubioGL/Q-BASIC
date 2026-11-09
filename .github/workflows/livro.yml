@@ -1,0 +1,67 @@
+# Gera o livro dos tutoriais (LaTeX → PDF) quando os notebooks ou o modelo mudam.
+# O PDF fica nos Artifacts da execução e é anexado a cada release.
+name: Livro dos tutoriais
+
+on:
+  push:
+    paths:
+      - "tutoriais/**"
+      - "tutorial_latex/**"
+      - "scripts/gerar_tutorial_latex.py"
+      - "tests/test_livro.py"
+      - ".github/workflows/livro.yml"
+  pull_request:
+    paths:
+      - "tutoriais/**"
+      - "tutorial_latex/**"
+      - "scripts/gerar_tutorial_latex.py"
+      - "tests/test_livro.py"
+      - ".github/workflows/livro.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  livro:
+    name: Gerar o PDF
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # para anexar o PDF à release
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Instalar o LaTeX (XeLaTeX) e as fontes DejaVu
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends texlive-xetex \
+            texlive-latex-recommended texlive-latex-extra texlive-lang-portuguese \
+            texlive-fonts-recommended texlive-science latexmk lmodern \
+            fonts-dejavu-core fonts-dejavu-extra
+      - name: Instalar o pacote com as dependências do livro
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[livro,test]"
+      - name: Testar o gerador
+        run: python -m pytest tests/test_livro.py -p no:cacheprovider
+      - name: Gerar o livro
+        run: python scripts/gerar_tutorial_latex.py --pdf
+      - name: Guardar o PDF
+        uses: actions/upload-artifact@v7
+        with:
+          name: livro-tutoriais
+          path: tutorial_latex/build/tutorial.pdf
+          if-no-files-found: error
+      - name: Anexar o PDF à release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp tutorial_latex/build/tutorial.pdf "Q-BASIC-tutoriais-${GITHUB_REF_NAME}.pdf"
+          gh release upload "${GITHUB_REF_NAME}" "Q-BASIC-tutoriais-${GITHUB_REF_NAME}.pdf" --clobber

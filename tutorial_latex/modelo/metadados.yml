@@ -1,0 +1,31 @@
+# Variáveis do modelo LaTeX padrão do pandoc usadas no livro.
+documentclass: book
+classoption:
+  - a4paper
+  - oneside
+  - openany
+fontsize: 11pt
+geometry:
+  - top=2.5cm
+  - bottom=2.5cm
+  - left=2.5cm
+  - right=2.5cm
+lang: pt-BR
+# Fontes DejaVu: cobrem acentos, letras gregas e símbolos como ⊗ e ⟩ usados nos códigos.
+mainfont: DejaVu Serif
+mainfontoptions:
+  - Scale=0.95
+sansfont: DejaVu Sans
+monofont: DejaVu Sans Mono
+monofontoptions:
+  - Scale=0.85
+linestretch: 1.1
+colorlinks: true
+linkcolor: purple
+urlcolor: purple
+toccolor: black
+toc: true
+toc-depth: 1
+toc-title: Sumário
+title-meta: "Simulação e computação quântica com o Q-BASIC"
+author-meta: "Gubio Gomes de Lima"

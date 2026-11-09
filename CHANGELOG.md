@@ -45,6 +45,10 @@ funcionando** (com avisos de obsolescência; veja a tabela de migração abaixo)
 - Site de documentação (Sphinx) com guia rápido, guia do usuário, tutoriais e referência
   da API: <https://gubiogl.github.io/Q-BASIC/>.
 - `CITATION.cff` para citar o software.
+- **Livro dos tutoriais em PDF**: `scripts/gerar_tutorial_latex.py` (ou `make livro`)
+  transforma os notebooks num livro em LaTeX; o PDF é gerado no CI e anexado às releases.
+- **Artigo** sobre a biblioteca em `paper/` (português, em LaTeX, e versão em inglês para
+  o JOSS), com figuras e números gerados por `paper/gerar_figuras.py`.
 - Pacote com `pyproject.toml`, testes (pytest, cobertura de 98 %), integração contínua
   no GitHub Actions, publicação automática no PyPI, exemplos e benchmarks.
 

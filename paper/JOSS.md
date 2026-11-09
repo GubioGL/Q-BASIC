@@ -67,7 +67,7 @@ usado em pesquisa". O argumento do artigo precisa ter três partes.
    TCCs, dissertações e na checagem de contas analíticas. Esses problemas pedem código
    **confiável e legível**, não código de alto desempenho.
 2. **Por que não contribuir com o QuTiP.** A contribuição é o próprio código como objeto
-   de estudo: pequeno (cerca de 2300 linhas), legível, escrito na mesma ordem do curso e
+   de estudo: pequeno (cerca de 2400 linhas), legível, escrito na mesma ordem do curso e
    em português. Isso não cabe dentro de um pacote grande em inglês. Mesmo assim, o
    Q-BASIC **reutiliza** o ecossistema (SciPy, comparação com o QuTiP), algo que o JOSS
    valoriza explicitamente.

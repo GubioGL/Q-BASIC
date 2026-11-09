@@ -87,7 +87,7 @@ with the design goals of established packages:
 
 - **Readability over generality.** Mature packages rely on compiled extensions and
   dispatch layers over several data formats, which is right for general-purpose software
-  but hides the linear algebra from a beginner. Q-BASIC stays at a size (about 2,300
+  but hides the linear algebra from a beginner. Q-BASIC stays at a size (about 2,400
   lines including docstrings) that a student can read in a semester.
 - **A course that converges to the library.** Each module corresponds to lessons in
   which the reader writes the same code. A tutorial for an existing package can explain

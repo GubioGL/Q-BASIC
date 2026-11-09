@@ -8,6 +8,7 @@ Medições de tempo do Q-BASIC. Os resultados alimentam a seção de desempenho 
 | [`bench_nucleo.py`](bench_nucleo.py) | Mede operações do núcleo (valor esperado, potência, Hamiltoniano esparso, solver, estado coerente, `repr`). Usa só a API comum às versões 0.0.x e 0.1.x. |
 | [`comparar_versoes.py`](comparar_versoes.py) | Roda `bench_nucleo.py` com uma versão antiga (extraída de um commit) e com a atual, e gera a tabela de antes × depois. |
 | [`resultados.md`](resultados.md) | Última tabela gerada. |
+| [`resultados.json`](resultados.json) | As mesmas medições em JSON (usadas nas figuras e na tabela do artigo). |
 | [`teste_gpu_pytorch.ipynb`](teste_gpu_pytorch.ipynb) | Teste exploratório de multiplicação de matrizes com PyTorch na CPU e na GPU. |
 
 ## Como rodar
@@ -15,7 +16,7 @@ Medições de tempo do Q-BASIC. Os resultados alimentam a seção de desempenho 
 ```bash
 pip install -e ".[dev]" ipython sympy     # ipython e sympy: só para rodar a versão antiga
 python benchmarks/bench_nucleo.py         # versão atual
-python benchmarks/comparar_versoes.py --saida benchmarks/resultados.md
+python benchmarks/comparar_versoes.py --saida benchmarks/resultados.md --json benchmarks/resultados.json
 ```
 
 ## Resultados da reestruturação (0.0.x → 0.1.0)

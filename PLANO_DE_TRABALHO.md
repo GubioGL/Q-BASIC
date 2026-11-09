@@ -1,7 +1,7 @@
 # Plano de trabalho — reestruturação do Q-BASIC
 
-> **Status (08/11/2026):** Fases 1 a 8 concluídas (versão 0.1.0 pronta, ainda não
-> publicada no PyPI). Faltam as Fases 9 (livro em LaTeX), 10 (paper) e 11 (acabamento).
+> **Status (09/11/2026):** Fases 1 a 10 concluídas (versão 0.1.0 pronta, ainda não
+> publicada no PyPI). Falta a Fase 11 (acabamento).
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -135,10 +135,10 @@ Q-BASIC/
 │   ├── simulador/               # Aulas renomeadas e numeradas (00_introducao.ipynb, ...)
 │   ├── computacao_quantica/
 │   └── indice.yml               # ✅ ordem e títulos dos capítulos (usado pelo script LaTeX e pelos docs)
-├── tutorial_latex/              # modelo LaTeX do livro + saída gerada (build/ ignorado no git)
+├── tutorial_latex/              # ✅ modelo LaTeX do livro + saída gerada (build/ ignorado no git)
 ├── scripts/
-│   └── gerar_tutorial_latex.py  # notebooks → livro LaTeX/PDF
-├── paper/                       # artigo científico (LaTeX + bib + figuras)
+│   └── gerar_tutorial_latex.py  # ✅ notebooks → livro LaTeX/PDF
+├── paper/                       # ✅ artigo (artigo/, joss/, figuras/, gerar_figuras.py)
 ├── exemplos/                    # scripts prontos (ex.: Jaynes-Cummings, vindo de Testes/)
 ├── benchmarks/                  # medições de desempenho (alimentam o paper)
 ├── pyproject.toml               # ✅ substitui o setup.py
@@ -236,28 +236,19 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 8.6 `docs/README.md`, `make docs` (raiz) e `docs/Makefile`/`make.bat`.
 
 ### Fase 9 — Script: tutoriais → livro em LaTeX
-- [ ] 9.1 `scripts/gerar_tutorial_latex.py`, que:
-  - lê `tutoriais/indice.yml` (ordem dos capítulos);
-  - **Parte I — Simulação quântica** (`tutoriais/simulador/`) e **Parte II — Computação quântica** (`tutoriais/computacao_quantica/`);
-  - converte células Markdown → LaTeX (preservando as equações `$...$`), código → `listings` com destaque de sintaxe, saídas de texto → `verbatim`, gráficos → arquivos em `figuras/` com `\includegraphics`, saídas LaTeX (`display(Math)`) → equações;
-  - gera `tutorial_latex/build/tutorial.tex` (+ um `.tex` por capítulo).
-- [ ] 9.2 Modelo do livro (`tutorial_latex/modelo/`): capa, sumário, prefácio, formatação em português (`babel`), estilo dos códigos.
-- [ ] 9.3 Opção `--pdf` que compila com `latexmk`. Comandos finais:
-  ```bash
-  python scripts/gerar_tutorial_latex.py          # gera o .tex
-  python scripts/gerar_tutorial_latex.py --pdf    # gera o .tex e compila o PDF
-  make tutorial                                   # atalho
-  ```
-- [ ] 9.4 Usar `pypandoc_binary` (pandoc já embutido, instala via pip) para não exigir instalação manual do pandoc.
-- [ ] 9.5 Testes do próprio script (gera o `.tex` a partir de um notebook pequeno de exemplo).
-- [ ] 9.6 (opcional) `.github/workflows/tutorial-pdf.yml`: gera o PDF no CI e deixa para download.
+- [x] 9.1 `scripts/gerar_tutorial_latex.py`: lê `tutoriais/indice.yml`, monta a Parte I (simulador) e a Parte II (computação quântica), converte o Markdown (com as equações), destaca o código, preserva as saídas de texto, as matrizes em LaTeX, os gráficos (em `figuras/`) e os erros propositais (em vermelho), e gera `tutorial_latex/build/tutorial.tex` (mais o `tutorial.md` intermediário). *(Um único `.tex` em vez de um por capítulo: é o que o pandoc gera e é mais simples de compilar.)* Ajustes automáticos: `\begin{equation}` → `$$`, `$ x $` → `$x$`, arrays do QuTiP com colunas a mais.
+- [x] 9.2 Modelo em `tutorial_latex/modelo/`: capa (logo, versão e data), sumário, prefácio, classe `book` em português, fontes DejaVu (cobrem ψ, ⟩, ⊗...), blocos de código com fundo e quebra de linha, saídas com barra lateral, cabeçalho com o nome da aula.
+- [x] 9.3 `--pdf` compila com XeLaTeX/`latexmk`. Atalho: **`make livro`**. Resultado atual: 124 páginas, sem linhas estourando a margem.
+- [x] 9.4 Extra `[livro]` com `pypandoc_binary` (pandoc embutido); funciona também com o pandoc do sistema (testado com o 3.1).
+- [x] 9.5 `tests/test_livro.py`: funções de conversão e geração de um livro pequeno, incluindo a compilação do PDF quando há XeLaTeX.
+- [x] 9.6 Workflow **Livro dos tutoriais** (`livro.yml`): gera o PDF quando os tutoriais ou o modelo mudam, guarda nos *Artifacts* e **anexa o PDF a cada release**.
 
 ### Fase 10 — Paper / artigo científico (`paper/`)
-- [ ] 10.1 Estrutura: `paper/main.tex`, `paper/referencias.bib`, `paper/figuras/`, `paper/README.md` (como compilar).
-- [ ] 10.2 Conteúdo proposto: Introdução e motivação (ensino de física/computação quântica no Brasil); trabalhos relacionados (QuTiP, Qiskit, QuantumOptics.jl); arquitetura do Q-BASIC (classe base, denso/esparso, solver); exemplos físicos (qubit e Rabi, estado coerente, Jaynes-Cummings) com figuras geradas por script; validação (testes contra soluções analíticas e QuTiP); desempenho (benchmarks da Fase 5); uso didático (os tutoriais); conclusão e trabalhos futuros.
-- [ ] 10.3 Scripts que geram as figuras do paper a partir da própria biblioteca (reprodutível).
-- [ ] 10.4 Versão JOSS (`paper/joss/paper.md` + `paper.bib`) — conforme D7.
-- [ ] 10.5 (opcional) `.github/workflows/paper.yml` para compilar o PDF a cada mudança em `paper/`.
+- [x] 10.1 Estrutura: `paper/artigo/` (`main.tex`, `referencias.bib`), `paper/joss/` (`paper.md`, `paper.bib`), `paper/figuras/`, `paper/gerar_figuras.py` e `paper/README.md`.
+- [x] 10.2 Artigo em português (10 páginas): introdução e trabalhos relacionados (QuTiP, QuantumOptics.jl, Qiskit); fundamentos (Fock truncado, `expm_multiply`, Lindblad vetorizada, Wigner por Laguerre, informação quântica); arquitetura (com diagrama); exemplos (Rabi, colapso e renascimento, decoerência do gato, teleportação); validação e desempenho; uso no ensino (tabela das aulas); conclusões. Autor único, Gubio Gomes de Lima; **afiliação e agradecimentos marcados com TODO**.
+- [x] 10.3 `paper/gerar_figuras.py` gera as quatro figuras, a tabela de desempenho (de `benchmarks/resultados.json`) e `valores.tex` com os números citados no texto, a partir da própria biblioteca. `make artigo` faz tudo.
+- [x] 10.4 Versão JOSS em inglês (`paper/joss/paper.md`, ~770 palavras, com figura e 19 referências conferidas com o pandoc).
+- [x] 10.5 Workflow **Artigo** (`paper.yml`): regenera as figuras, compila o artigo e gera o rascunho do JOSS com a ferramenta oficial da revista; os PDFs ficam nos *Artifacts*.
 
 ### Fase 11 — Acabamento profissional
 - [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
@@ -278,8 +269,8 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 | 2 ✅ | Fase 1 → Fase 2 → Fase 3 | Projeto instalável + testes + CI: rede de segurança antes de mexer no código. |
 | 3 ✅ | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
 | 4 ✅ | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
-| 5 | Fase 7 ✅ → Fase 8 ✅ → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
-| 6 | Fase 10 → Fase 11 | O paper usa os benchmarks e os tutoriais; o acabamento fecha a versão 0.1.0. |
+| 5 ✅ | Fase 7 → Fase 8 → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
+| 6 | Fase 10 ✅ → Fase 11 | O paper usa os benchmarks e os tutoriais; o acabamento fecha a versão 0.1.0. |
 
 Cada fase vira um ou mais commits na branch `claude/vibrant-faraday-ucinuf`, com os testes passando antes de seguir para a próxima.
 

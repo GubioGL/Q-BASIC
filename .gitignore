@@ -45,6 +45,9 @@ docs/build/
 *.synctex.gz
 *.toc
 tutorial_latex/build/
+paper/artigo/main.pdf
+paper/joss/paper.pdf
+paper/joss/paper.jats
 
 # Editores e sistema
 .vscode/

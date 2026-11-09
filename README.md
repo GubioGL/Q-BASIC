@@ -80,7 +80,7 @@ Q-BASIC/
 ├── tutoriais/                   # Notebooks: simulador (aulas 0–12) e computação quântica
 ├── docs/                        # Documentação (site HTML com Sphinx)
 ├── tutorial_latex/              # Modelo do livro dos tutoriais (LaTeX/PDF)
-├── paper/                       # Artigo científico (português) e versão para o JOSS
+├── paper/                       # Artigo sobre a biblioteca para o JOSS (inglês)
 ├── .github/workflows/           # CI: testes em todo commit e publicação no PyPI
 ├── pyproject.toml               # Configuração do pacote
 ├── CHANGELOG.md                 # Novidades de cada versão e guia de migração

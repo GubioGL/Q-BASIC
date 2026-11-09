@@ -29,7 +29,7 @@ pre-commit install             # verificações automáticas a cada commit
 | `benchmarks/` | medições de desempenho |
 | `docs/` | esta documentação (Sphinx) |
 | `tutorial_latex/` | modelo do livro dos tutoriais (gerado por `scripts/gerar_tutorial_latex.py`) |
-| `paper/` | artigo científico (português, em LaTeX) e versão para o JOSS (inglês) |
+| `paper/` | artigo sobre a biblioteca para o JOSS (inglês) e guia de submissão |
 
 ## Comandos do dia a dia
 
@@ -42,7 +42,7 @@ pre-commit install             # verificações automáticas a cada commit
 | `make tutoriais` | executa todos os notebooks (precisa de `".[tutorial]"` e `nbmake`) |
 | `make docs` | gera este site em `docs/_build/html` (precisa de `".[docs]"`) |
 | `make livro` | gera o livro dos tutoriais em LaTeX/PDF (precisa de `".[livro]"` e XeLaTeX) |
-| `make artigo` | gera as figuras e o PDF do artigo (precisa de `".[plot]"` e LaTeX) |
+| `make artigo` | gera a figura e o PDF do artigo do JOSS (precisa de `".[plot]"` e Docker) |
 | `make bench` | compara o desempenho com a versão anterior à reestruturação |
 | `make build` | gera o pacote (`dist/`) e confere os metadados |
 

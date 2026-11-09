@@ -1,54 +1,37 @@
-# paper — artigo científico sobre o Q-BASIC
+# paper — artigo sobre a biblioteca Q-BASIC
 
-Duas versões do mesmo trabalho:
+O projeto tem dois produtos:
 
-| Pasta | Versão | Formato |
-|---|---|---|
-| [`artigo/`](artigo/) | Artigo completo em **português**, pensado para uma revista de ensino de física (como a *Revista Brasileira de Ensino de Física*). | LaTeX (`main.tex`) + BibTeX (`referencias.bib`) |
-| [`joss/`](joss/) | Versão curta em **inglês** para o [*Journal of Open Source Software*](https://joss.theoj.org/) (JOSS). | Markdown (`paper.md`) + BibTeX (`paper.bib`) |
+- o **livro** (`tutoriais/` → `tutorial_latex/`), um curso que ensina a construir um
+  simulador quântico do zero;
+- a **biblioteca** (`src/qbasic/`), o produto final dessas aulas.
+
+Esta pasta guarda o **artigo sobre a biblioteca**, em inglês, para o
+[*Journal of Open Source Software*](https://joss.theoj.org/) (JOSS).
+
+| Arquivo | Conteúdo |
+|---|---|
+| [`JOSS.md`](JOSS.md) | **Leia primeiro:** o que o JOSS exige, o que já temos, o que falta e como justificar o artigo. |
+| [`joss/paper.md`](joss/paper.md) | Rascunho do artigo (Markdown no formato do JOSS). Os pontos marcados `TODO` precisam ser preenchidos antes da submissão. |
+| [`joss/paper.bib`](joss/paper.bib) | Referências (BibTeX). |
+| [`joss/figura_qbasic.png`](joss/figura_qbasic.png) | Figura do artigo, gerada pela própria biblioteca. |
+| [`gerar_figuras.py`](gerar_figuras.py) | Script que refaz a figura. |
 
 Autor: Gubio Gomes de Lima.
 
-## Figuras e números reprodutíveis
-
-Todas as figuras e os números citados no artigo são gerados pela própria biblioteca:
+## Figura reprodutível
 
 ```bash
 pip install -e ".[plot]"
-python paper/gerar_figuras.py
+python paper/gerar_figuras.py   # grava paper/joss/figura_qbasic.png
 ```
 
-O script grava em [`figuras/`](figuras/):
+Os números de desempenho citados no artigo vêm de `benchmarks/` (`make bench`).
 
-- as figuras em PDF;
-- a tabela de desempenho, lida de `benchmarks/resultados.json`;
-- `valores.tex`, com os erros e os tempos citados no texto (macros como `\ErroExpm`).
+## Compilar o PDF
 
-Grava também, em `joss/figura_qbasic.png`, a figura da versão para o JOSS.
-
-Para atualizar as medições de desempenho antes de regenerar as figuras:
-
-```bash
-make bench        # gera benchmarks/resultados.md e benchmarks/resultados.json
-```
-
-## Compilar
-
-```bash
-make artigo                               # figuras + PDF do artigo em português
-cd paper/artigo && latexmk -pdf main.tex  # só o PDF (pdfLaTeX + BibTeX)
-```
-
-O workflow **Artigo** do GitHub Actions compila as duas versões a cada mudança em
-`paper/` e deixa os PDFs nos *Artifacts* da execução. A versão do JOSS usa a ferramenta
-oficial de rascunhos da revista (`openjournals-draft-action`).
-
-## Antes de submeter
-
-- [ ] Preencher a **afiliação** do autor (marcada com `TODO` em `artigo/main.tex` e em
-      `joss/paper.md`).
-- [ ] Escrever os **agradecimentos** (e o financiamento, se houver).
-- [ ] Revista em português: aplicar o modelo da revista escolhida (o texto usa a classe
-      `article` padrão justamente para facilitar essa troca).
-- [ ] JOSS: o repositório precisa estar público, ter licença OSI (MIT ✓), documentação
-      (✓), testes (✓) e uma versão publicada (release + DOI, por exemplo pelo Zenodo).
+- **GitHub Actions:** o workflow **Artigo** refaz a figura e gera o PDF com a ferramenta
+  oficial do JOSS (`openjournals-draft-action`) a cada mudança em `paper/`. O PDF fica
+  nos *Artifacts* da execução.
+- **Localmente, com Docker:** `make artigo`. Ele roda a imagem `openjournals/inara`,
+  a mesma usada pela revista, e grava `paper/joss/paper.pdf`.

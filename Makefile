@@ -30,9 +30,10 @@ tutoriais:  ## Executa todos os notebooks dos tutoriais (precisa de ".[tutorial]
 livro:  ## Gera o livro dos tutoriais em LaTeX e PDF (precisa de ".[livro]" e XeLaTeX)
 	$(PYTHON) scripts/gerar_tutorial_latex.py --pdf
 
-artigo:  ## Gera as figuras e o PDF do artigo (precisa de ".[plot]" e LaTeX)
+artigo:  ## Gera a figura e o PDF do artigo do JOSS (precisa de ".[plot]" e Docker)
 	$(PYTHON) paper/gerar_figuras.py
-	cd paper/artigo && latexmk -pdf -interaction=nonstopmode main.tex
+	docker run --rm --volume "$(CURDIR)/paper/joss":/data --user $$(id -u):$$(id -g) \
+		--env JOURNAL=joss openjournals/inara
 
 docs:  ## Gera o site de documentação em docs/_build/html (precisa de ".[docs]")
 	MPLBACKEND=Agg $(PYTHON) -m sphinx -W --keep-going -b html docs/source docs/_build/html
@@ -53,5 +54,6 @@ build:  ## Gera o pacote (sdist + wheel) em dist/ e verifica os metadados
 	$(PYTHON) -m twine check --strict dist/*
 
 clean:  ## Remove arquivos gerados
-	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov docs/_build docs/source/tutoriais tutorial_latex/build
+	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov docs/_build docs/source/tutoriais tutorial_latex/build \
+		paper/joss/paper.pdf paper/joss/paper.jats
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +

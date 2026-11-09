@@ -2,6 +2,10 @@
 
 > **Status (09/11/2026):** Fases 1 a 10 concluídas (versão 0.1.0 pronta, ainda não
 > publicada no PyPI). Falta a Fase 11 (acabamento).
+> O projeto tem dois produtos: o **livro** (curso que ensina a construir um simulador
+> quântico) e a **biblioteca** (produto final das aulas), descrita no **artigo para o
+> JOSS**. O artigo em português foi removido; o que falta para submeter está em
+> `paper/JOSS.md`.
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -92,7 +96,7 @@ da versão antiga, antes da reestruturação.
 | D4 | Pacote BRa | Retirado do README como pacote existente; agora aparece no **Roadmap**. ✅ |
 | D5 | Backends PyTorch/CuPy/Numba | Dependência opcional (`pip install "Q-BASIC[gpu]"`) e roadmap. ✅ |
 | D6 | Idioma da documentação | **Português** primeiro. |
-| D7 | Paper | **Os dois**: RBEF (LaTeX, português) + JOSS (`paper.md`, inglês). Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
+| D7 | Paper | **Só o JOSS** (`paper.md`, inglês), sobre a biblioteca; o artigo em português (RBEF) foi descartado. O livro pode ir para o JOSE. Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
 | D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
 | D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
 | D10 | Layout do pacote | **`src/qbasic/`**. ✅ |
@@ -138,7 +142,7 @@ Q-BASIC/
 ├── tutorial_latex/              # ✅ modelo LaTeX do livro + saída gerada (build/ ignorado no git)
 ├── scripts/
 │   └── gerar_tutorial_latex.py  # ✅ notebooks → livro LaTeX/PDF
-├── paper/                       # ✅ artigo (artigo/, joss/, figuras/, gerar_figuras.py)
+├── paper/                       # ✅ artigo do JOSS (joss/), guia JOSS.md e gerar_figuras.py
 ├── exemplos/                    # scripts prontos (ex.: Jaynes-Cummings, vindo de Testes/)
 ├── benchmarks/                  # medições de desempenho (alimentam o paper)
 ├── pyproject.toml               # ✅ substitui o setup.py
@@ -244,17 +248,19 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 9.6 Workflow **Livro dos tutoriais** (`livro.yml`): gera o PDF quando os tutoriais ou o modelo mudam, guarda nos *Artifacts* e **anexa o PDF a cada release**.
 
 ### Fase 10 — Paper / artigo científico (`paper/`)
-- [x] 10.1 Estrutura: `paper/artigo/` (`main.tex`, `referencias.bib`), `paper/joss/` (`paper.md`, `paper.bib`), `paper/figuras/`, `paper/gerar_figuras.py` e `paper/README.md`.
-- [x] 10.2 Artigo em português (10 páginas): introdução e trabalhos relacionados (QuTiP, QuantumOptics.jl, Qiskit); fundamentos (Fock truncado, `expm_multiply`, Lindblad vetorizada, Wigner por Laguerre, informação quântica); arquitetura (com diagrama); exemplos (Rabi, colapso e renascimento, decoerência do gato, teleportação); validação e desempenho; uso no ensino (tabela das aulas); conclusões. Autor único, Gubio Gomes de Lima; **afiliação e agradecimentos marcados com TODO**.
-- [x] 10.3 `paper/gerar_figuras.py` gera as quatro figuras, a tabela de desempenho (de `benchmarks/resultados.json`) e `valores.tex` com os números citados no texto, a partir da própria biblioteca. `make artigo` faz tudo.
-- [x] 10.4 Versão JOSS em inglês (`paper/joss/paper.md`, ~770 palavras, com figura e 19 referências conferidas com o pandoc).
-- [x] 10.5 Workflow **Artigo** (`paper.yml`): regenera as figuras, compila o artigo e gera o rascunho do JOSS com a ferramenta oficial da revista; os PDFs ficam nos *Artifacts*.
+- [x] 10.1 Estrutura: `paper/joss/` (`paper.md`, `paper.bib`, figura), `paper/gerar_figuras.py`, `paper/README.md` e o guia `paper/JOSS.md`. *(O artigo em português em LaTeX foi feito e depois removido, a seu pedido.)*
+- [x] 10.2 Artigo do JOSS em inglês (~1650 palavras) com todas as seções obrigatórias: Summary, Statement of need, State of the field (com a justificativa "build vs. contribute"), Software design, Research impact statement, AI usage disclosure, Acknowledgements e References (19 referências conferidas com o pandoc).
+- [x] 10.3 `paper/gerar_figuras.py` refaz a figura do artigo (decoerência do gato de Schrödinger) a partir da própria biblioteca.
+- [x] 10.4 Workflow **Artigo** (`paper.yml`): refaz a figura e gera o PDF com a ferramenta oficial do JOSS; o PDF fica nos *Artifacts*. Localmente: `make artigo` (Docker).
+- [x] 10.5 Guia `paper/JOSS.md`: pontos obrigatórios do artigo, portões da pré-avaliação, checklist dos revisores com o status do repositório, como justificar o artigo e o que investir antes de submeter.
+- [ ] 10.6 **Você:** preencher os `TODO` do `paper.md` (ORCID, afiliação, **impacto em pesquisa**, modelo/versão da IA, agradecimentos/financiamento) e cumprir os requisitos do `paper/JOSS.md` antes de submeter.
 
 ### Fase 11 — Acabamento profissional
 - [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
 - [x] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub) — criado na Fase 8, com a página "Como citar".
 - [ ] 11.3 `CHANGELOG.md` ✅ (criado na Fase 5, com o guia de migração) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
 - [ ] 11.4 Modelos de issue e de pull request.
+- [ ] 11.4b Exigências do JOSS para boas práticas: `CODE_OF_CONDUCT.md`, onde pedir suporte (issues/Discussions/e-mail) e uma frase de governança (ver `paper/JOSS.md`).
 - [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/source/desenvolvimento/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
 - [ ] 11.6 (opcional, você faz no site) ligar o repositório ao **Zenodo** para ter DOI a cada release.
 - [ ] 11.7 Apagar este `PLANO_DE_TRABALHO.md` (ou movê-lo para `docs/`) quando tudo estiver concluído.

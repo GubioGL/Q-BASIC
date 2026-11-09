@@ -223,6 +223,7 @@ every notebook of the course.
 # Acknowledgements
 
 **TODO:** *acknowledge colleagues, students and institutions, and list any financial
-support (agency and grant number), or state that no specific funding was received.*
+support (agency and grant number) with a statement on whether the sponsor had any
+involvement in the work, or state that no specific funding was received.*
 
 # References

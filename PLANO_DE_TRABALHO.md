@@ -96,7 +96,7 @@ da versão antiga, antes da reestruturação.
 | D4 | Pacote BRa | Retirado do README como pacote existente; agora aparece no **Roadmap**. ✅ |
 | D5 | Backends PyTorch/CuPy/Numba | Dependência opcional (`pip install "Q-BASIC[gpu]"`) e roadmap. ✅ |
 | D6 | Idioma da documentação | **Português** primeiro. |
-| D7 | Paper | **Só o JOSS** (`paper.md`, inglês), sobre a biblioteca; o artigo em português (RBEF) foi descartado. O livro pode ir para o JOSE. Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
+| D7 | Paper | **Só o JOSS** (`paper.md`, inglês), sobre a biblioteca; o artigo em português (RBEF) foi descartado. O livro vai para o arXiv. Como o JOSS ainda não é possível (falta uso em pesquisa e histórico distribuído), o plano é: DOI no Zenodo + preprint da biblioteca no arXiv agora e JOSS depois (ver `paper/JOSS.md`, seção 9). Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
 | D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
 | D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
 | D10 | Layout do pacote | **`src/qbasic/`**. ✅ |

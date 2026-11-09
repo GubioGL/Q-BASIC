@@ -13,7 +13,7 @@ submissão. O rascunho do artigo está em [`joss/paper.md`](joss/paper.md).
 
 | Produto | O que é | Onde publicar |
 |---|---|---|
-| **Livro** (`tutoriais/` → `tutorial_latex/`) | Curso que ensina a construir, do zero, um simulador quântico, para aprender física quântica, sistemas quânticos e computação quântica. | Livro/apostila próprio; candidato natural ao **JOSE** (seção 9). |
+| **Livro** (`tutoriais/` → `tutorial_latex/`) | Curso que ensina a construir, do zero, um simulador quântico, para aprender física quântica, sistemas quânticos e computação quântica. | **arXiv** (seção 9). |
 | **Biblioteca** (`src/qbasic/`) | O produto final das aulas: o simulador pronto, testado e documentado. | **Artigo no JOSS** (este guia). |
 
 O artigo do JOSS é sobre o **software**, não sobre o curso nem sobre resultados de
@@ -34,7 +34,7 @@ TODO. Ao preencher o impacto, encurte outras seções (por exemplo, o exemplo do
 | **Software design** | Trade-offs, arquitetura escolhida e **por que** importa. Não basta descrever pastas. | ✅ (classe única densa/esparsa, notação `*`/`@`, expm × Runge-Kutta, Liouvilliano, portas por permutação, compatibilidade) |
 | **Research impact statement** | Evidência **concreta**: publicações, uso externo, integrações; ou significância próxima (benchmarks, materiais reprodutíveis, sinais da comunidade). **Promessas de uso futuro não valem.** | ❌ **falta o principal** (TODO): uso em pesquisa |
 | **AI usage disclosure** | Ferramentas/modelos **e versões**, onde foram usados, natureza e escopo, e confirmação de revisão humana. | ⚠️ falta o modelo/versão (TODO); confirmar a revisão |
-| **Acknowledgements** | Agradecimentos e **todo apoio financeiro**. | ⚠️ TODO |
+| **Acknowledgements** | Agradecimentos, **todo apoio financeiro** e uma frase dizendo se o financiador teve ou não algum papel no trabalho. | ⚠️ TODO |
 | **References** | Lista completa, com nomes completos das revistas, incluindo os softwares relacionados. | ✅ 19 referências conferidas |
 
 Também é pedido que o artigo mencione projetos de pesquisa e publicações que usaram o
@@ -174,20 +174,49 @@ O JOSS permite IA, mas exige uma declaração completa. Omitir ou ser vago é tr
   execução.
 - Localmente, com Docker: `make artigo`.
 
-## 9. E o livro? Considere o JOSE
+## 9. Plano de publicação e alternativas ao JOSS
 
-O [*Journal of Open Source Education*](https://jose.theoj.org/) (JOSE), revista irmã do
-JOSS, publica **módulos de aprendizagem computacionais** (recursos educacionais abertos)
-e **software educacional**. O livro que ensina a construir o simulador se encaixa nesse
-perfil, e a exigência central do JOSS (impacto em pesquisa) não é o foco ali. O artigo do
-JOSE é curto (cerca de 1000 palavras) e escrito para não especialistas.
+Hoje o JOSS seria uma rejeição imediata ("ainda não", não "nunca"): faltam uso em
+pesquisa (portão 2) e um histórico de desenvolvimento distribuído no tempo (portões 1 e
+4). Plano sugerido:
 
-Caminho sugerido:
+### Livro → arXiv
 
-1. **JOSE**, para o curso/livro, depois de aplicá-lo pelo menos uma vez com alunos (a
-   experiência de uso é um argumento forte);
-2. **JOSS**, para a biblioteca, quando houver uso em pesquisa e histórico suficiente.
+O script já gera o `tutorial.tex` e as figuras. O arXiv costuma exigir o código-fonte
+LaTeX (não só o PDF) e pode pedir **endosso** a quem submete pela primeira vez numa
+categoria (por exemplo, `physics.ed-ph`). Para um texto em português, prepare também um
+resumo em inglês. Confira as regras atuais do arXiv antes de enviar.
 
-Antes de submeter aos dois, confira as regras atuais do JOSE para módulos de
-aprendizagem e pergunte aos editores se os dois artigos podem coexistir. São
-contribuições diferentes (curso × software), mas o material se sobrepõe.
+### Biblioteca, agora (sem esperar o JOSS)
+
+1. **Release v0.1.0 + DOI do Zenodo.** É a primeira opção que o próprio JOSS sugere para
+   software fora do escopo: a biblioteca passa a ser citável com DOI.
+2. **Preprint do artigo da biblioteca no arXiv** (o `paper.md` convertido para LaTeX). O
+   JOSS aceita preprints antes, durante ou depois da submissão e **não** os considera
+   publicação prévia, então isso não impede a submissão futura.
+3. **Revisão no [pyOpenSci](https://www.pyopensci.org/)** (opcional, gratuita). É uma
+   revisão por pares de pacotes Python científicos, sugerida pelo próprio JOSS. Pede o
+   compromisso de manter o pacote por 2 anos e oferece uma consulta prévia de escopo.
+   Pacotes aceitos que estejam no escopo do JOSS passam por um processo mais rápido lá,
+   mas a exigência de uso em pesquisa continua valendo.
+
+### Revistas com revisão por pares que não exigem uso em pesquisa
+
+- **Revista Brasileira de Ensino de Física (RBEF)**, da SBF: acesso aberto (CC-BY,
+  SciELO), voltada ao ensino de física. Encaixa o ângulo didático (biblioteca + curso),
+  mas pede um bom argumento pedagógico, idealmente com experiência em sala. Confira as
+  seções e se há taxa.
+- **Journal of Open Research Software (JORS)**: artigos curtos sobre software, com foco
+  no **potencial de reuso**. Cobra taxa de publicação (fontes citam entre £350 e £400).
+  Confira os requisitos atuais.
+- **JOSE** (*Journal of Open Source Education*): seria o encaixe natural para software
+  educacional, mas a documentação atual diz que **as submissões estão suspensas**
+  enquanto a revista revê os critérios de elegibilidade. Acompanhe em
+  <https://jose.theoj.org/>.
+
+### Biblioteca, depois → JOSS
+
+Quando houver pelo menos 6 meses de desenvolvimento público contínuo após a
+reestruturação **e** evidência de uso em pesquisa (seção 5), por volta de maio de 2027
+ou depois. O preprint no arXiv e o DOI do Zenodo continuam valendo e entram como
+referências.

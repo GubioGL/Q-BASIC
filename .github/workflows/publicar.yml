@@ -23,6 +23,8 @@ jobs:
 
   construir:
     name: Construir o pacote
+    # Releases auxiliares (por exemplo, a tag "update") não são versões publicáveis.
+    if: startsWith(github.event.release.tag_name, 'v')
     needs: testes
     runs-on: ubuntu-latest
     steps:
@@ -33,9 +35,10 @@ jobs:
       - name: Conferir se a tag da release corresponde à versão do pacote
         run: |
           VERSAO=$(grep -oP '__version__ = "\K[^"]+' src/qbasic/_version.py)
-          echo "Versão do pacote: ${VERSAO} | tag da release: ${GITHUB_REF_NAME}"
-          if [ "${GITHUB_REF_NAME#v}" != "${VERSAO}" ]; then
-            echo "::error::A tag ${GITHUB_REF_NAME} não corresponde à versão ${VERSAO} de src/qbasic/_version.py. Use a tag v${VERSAO}."
+          TAG="${{ github.event.release.tag_name }}"
+          echo "Versão do pacote: ${VERSAO} | tag da release: ${TAG}"
+          if [ "${TAG#v}" != "${VERSAO}" ]; then
+            echo "::error::A tag ${TAG} não corresponde à versão ${VERSAO} de src/qbasic/_version.py. Use a tag v${VERSAO}."
             exit 1
           fi
       - name: Gerar sdist e wheel

@@ -12,7 +12,7 @@ Uso (a partir da raiz do repositório)::
     python scripts/gerar_tutorial_latex.py             # gera tutorial_latex/build/tutorial.tex
     python scripts/gerar_tutorial_latex.py --pdf       # também compila o PDF
 
-O PDF precisa de uma distribuição LaTeX com XeLaTeX e latexmk (por exemplo, TeX Live) e das
+O PDF precisa de uma distribuição LaTeX com pdfLaTeX e latexmk (por exemplo, TeX Live) e das
 fontes DejaVu.
 """
 
@@ -294,6 +294,7 @@ def gerar(
             "--standalone",
             "--top-level-division=part",
             f"--metadata-file={MODELO / 'metadados.yml'}",
+            f"--template={MODELO / 'template.latex'}",
             f"--include-in-header={MODELO / 'preambulo.tex'}",
             f"--include-before-body={saida / 'capa.tex'}",
             f"--resource-path={saida}",
@@ -308,7 +309,7 @@ def gerar_zip_overleaf(saida: Path) -> Path:
     """Empacota o livro para o Overleaf: tutorial.tex, figuras/ e o logo.
 
     Os arquivos entram com data fixa, então o zip só muda quando o conteúdo muda.
-    Compile no Overleaf com XeLaTeX (Menu → Compiler).
+    Compile no Overleaf com pdfLaTeX (o padrão).
     """
     saida = Path(saida)
     zip_path = saida / "q-basic-livro-overleaf.zip"
@@ -323,14 +324,13 @@ def gerar_zip_overleaf(saida: Path) -> Path:
 
 
 def compilar_pdf(tex: Path) -> Path:
-    """Compila com XeLaTeX (via latexmk, se existir)."""
+    """Compila com pdfLaTeX (via latexmk, se existir)."""
     if shutil.which("latexmk"):
-        comando = ["latexmk", "-xelatex", "-interaction=nonstopmode", "-halt-on-error", tex.name]
-        execucoes = [comando]
-    elif shutil.which("xelatex"):
-        execucoes = [["xelatex", "-interaction=nonstopmode", "-halt-on-error", tex.name]] * 2
+        execucoes = [["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", tex.name]]
+    elif shutil.which("pdflatex"):
+        execucoes = [["pdflatex", "-interaction=nonstopmode", "-halt-on-error", tex.name]] * 2
     else:
-        raise SystemExit("XeLaTeX não encontrado: instale uma distribuição LaTeX (ex.: TeX Live)")
+        raise SystemExit("pdfLaTeX não encontrado: instale uma distribuição LaTeX (ex.: TeX Live)")
     for comando in execucoes:
         resultado = subprocess.run(comando, cwd=tex.parent, capture_output=True, text=True)
         if resultado.returncode != 0:
@@ -344,7 +344,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Gera o livro em LaTeX a partir dos tutoriais.")
     parser.add_argument("--indice", type=Path, default=INDICE_PADRAO, help="arquivo indice.yml")
     parser.add_argument("--saida", type=Path, default=SAIDA_PADRAO, help="pasta de saída")
-    parser.add_argument("--pdf", action="store_true", help="também compila o PDF (XeLaTeX)")
+    parser.add_argument("--pdf", action="store_true", help="também compila o PDF (pdfLaTeX)")
     args = parser.parse_args(argv)
 
     tex = gerar(args.indice, args.saida)

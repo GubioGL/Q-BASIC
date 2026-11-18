@@ -189,7 +189,7 @@ def test_gera_o_livro(livro, tmp_path):
     assert "gerado em 01/01/2026" in (tmp_path / "build" / "capa.tex").read_text(encoding="utf-8")
     assert (tmp_path / "build" / "figuras" / "simulador_00_teste_01.png").exists()
 
-    if shutil.which("xelatex"):
+    if shutil.which("pdflatex"):
         pdf = livro.compilar_pdf(tex)
         assert pdf.exists()
 

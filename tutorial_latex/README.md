@@ -15,13 +15,11 @@ python scripts/gerar_tutorial_latex.py --pdf     # também compila o PDF
 make livro                                       # atalho para a linha acima
 ```
 
-O PDF precisa de uma distribuição LaTeX com **XeLaTeX** e **latexmk**, e das fontes
-**DejaVu**. No Ubuntu/Debian:
+O PDF precisa de uma distribuição LaTeX com **pdfLaTeX** e **latexmk**. No Ubuntu/Debian:
 
 ```bash
-sudo apt-get install texlive-xetex texlive-latex-recommended texlive-latex-extra \
-  texlive-lang-portuguese texlive-fonts-recommended texlive-science latexmk lmodern \
-  fonts-dejavu-core fonts-dejavu-extra
+sudo apt-get install texlive-latex-recommended texlive-latex-extra \
+  texlive-lang-portuguese texlive-fonts-recommended texlive-science latexmk lmodern
 ```
 
 No Windows e no macOS, o MiKTeX ou o MacTeX servem.
@@ -43,12 +41,13 @@ anexado aos arquivos da versão.
    - erros propositais: em vermelho;
    - matrizes exibidas em LaTeX: como equações, reduzidas se forem largas;
    - gráficos: salvos em `build/figuras/`.
-4. O pandoc converte tudo para LaTeX com o modelo de [`modelo/`](modelo/), e o XeLaTeX gera
-   o PDF.
+4. O pandoc converte tudo para LaTeX com o modelo de [`modelo/`](modelo/), e o pdfLaTeX gera
+   o PDF. O livro não usa fontes do sistema, então compila igual no Overleaf e no arXiv.
 
 | Arquivo | Conteúdo |
 |---|---|
 | `modelo/metadados.yml` | classe do documento, fontes, margens, idioma, sumário |
+| `modelo/template.latex` | modelo do pandoc, com a parte de fontes trocada por pdfLaTeX |
 | `modelo/preambulo.tex` | pacotes e estilos (notação de Dirac, blocos de código e de saída, cabeçalho) |
 | `modelo/capa.tex` | capa (versão e data preenchidas pelo script) |
 | `modelo/prefacio.md` | prefácio |

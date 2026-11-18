@@ -27,7 +27,7 @@ bench:  ## Compara o desempenho com a versão anterior à reestruturação
 tutoriais:  ## Executa todos os notebooks dos tutoriais (precisa de ".[tutorial]" e nbmake)
 	MPLBACKEND=Agg $(PYTHON) -m pytest --nbmake --nbmake-timeout=600 tutoriais/simulador tutoriais/computacao_quantica
 
-livro:  ## Gera o livro dos tutoriais em LaTeX e PDF (precisa de ".[livro]" e XeLaTeX)
+livro:  ## Gera o livro dos tutoriais em LaTeX e PDF (precisa de ".[livro]" e pdfLaTeX)
 	$(PYTHON) scripts/gerar_tutorial_latex.py --pdf
 
 docs:  ## Gera o site de documentação em docs/_build/html (precisa de ".[docs]")

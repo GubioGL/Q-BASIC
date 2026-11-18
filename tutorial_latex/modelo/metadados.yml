@@ -11,14 +11,6 @@ geometry:
   - left=2.5cm
   - right=2.5cm
 lang: pt-BR
-# Fontes DejaVu: cobrem acentos, letras gregas e símbolos como ⊗ e ⟩ usados nos códigos.
-mainfont: DejaVu Serif
-mainfontoptions:
-  - Scale=0.95
-sansfont: DejaVu Sans
-monofont: DejaVu Sans Mono
-monofontoptions:
-  - Scale=0.85
 linestretch: 1.1
 colorlinks: true
 linkcolor: purple

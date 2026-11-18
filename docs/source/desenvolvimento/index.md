@@ -40,7 +40,7 @@ pre-commit install             # verificações automáticas a cada commit
 | `make lint` / `make format` | confere / corrige o estilo (ruff) |
 | `make tutoriais` | executa todos os notebooks (precisa de `".[tutorial]"` e `nbmake`) |
 | `make docs` | gera este site em `docs/_build/html` (precisa de `".[docs]"`) |
-| `make livro` | gera o livro dos tutoriais em LaTeX/PDF (precisa de `".[livro]"` e XeLaTeX) |
+| `make livro` | gera o livro dos tutoriais em LaTeX/PDF (precisa de `".[livro]"` e pdfLaTeX) |
 | `make bench` | compara o desempenho com a versão anterior à reestruturação |
 | `make build` | gera o pacote (`dist/`) e confere os metadados |
 

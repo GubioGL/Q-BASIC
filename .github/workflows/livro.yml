@@ -37,13 +37,12 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: pyproject.toml
-      - name: Instalar o LaTeX (XeLaTeX) e as fontes DejaVu
+      - name: Instalar o LaTeX (pdfLaTeX)
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends texlive-xetex \
+          sudo apt-get install -y --no-install-recommends \
             texlive-latex-recommended texlive-latex-extra texlive-lang-portuguese \
-            texlive-fonts-recommended texlive-science latexmk lmodern \
-            fonts-dejavu-core fonts-dejavu-extra
+            texlive-fonts-recommended texlive-science latexmk lmodern
       - name: Instalar o pacote com as dependências do livro
         run: |
           python -m pip install --upgrade pip

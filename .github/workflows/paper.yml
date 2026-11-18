@@ -37,7 +37,8 @@ jobs:
       - name: Conferir se o Overleaf está atualizado
         run: |
           python paper/gerar_overleaf.py
-          git diff --exit-code -- paper/overleaf || \
+          # Só o texto: a figura é refeita pelo matplotlib, e o PNG (e o zip) variam por máquina.
+          git diff --exit-code -- paper/overleaf/paper.tex paper/overleaf/paper.bib || \
             (echo "paper/overleaf desatualizado: rode make overleaf e faça commit" && exit 1)
       - name: Gerar o rascunho com a ferramenta do JOSS
         uses: openjournals/openjournals-draft-action@master

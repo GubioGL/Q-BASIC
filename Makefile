@@ -3,7 +3,7 @@
 
 PYTHON ?= python
 
-.PHONY: help install install-dev test doctest bench tutoriais livro artigo overleaf docs cov lint format build clean
+.PHONY: help install install-dev test doctest bench tutoriais livro docs cov lint format build clean
 
 help:  ## Mostra esta ajuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "} {printf "  %-12s %s\n", $$1, $$2}'
@@ -30,14 +30,6 @@ tutoriais:  ## Executa todos os notebooks dos tutoriais (precisa de ".[tutorial]
 livro:  ## Gera o livro dos tutoriais em LaTeX e PDF (precisa de ".[livro]" e XeLaTeX)
 	$(PYTHON) scripts/gerar_tutorial_latex.py --pdf
 
-artigo:  ## Gera a figura e o PDF do artigo do JOSS (precisa de ".[plot]" e Docker)
-	$(PYTHON) paper/gerar_figuras.py
-	docker run --rm --volume "$(CURDIR)/paper/joss":/data --user $$(id -u):$$(id -g) \
-		--env JOURNAL=joss openjournals/inara
-
-overleaf:  ## Gera paper/overleaf/ (paper.tex e zip para o Overleaf; precisa de ".[livro]")
-	$(PYTHON) paper/gerar_overleaf.py
-
 docs:  ## Gera o site de documentação em docs/_build/html (precisa de ".[docs]")
 	MPLBACKEND=Agg $(PYTHON) -m sphinx -W --keep-going -b html docs/source docs/_build/html
 
@@ -57,6 +49,5 @@ build:  ## Gera o pacote (sdist + wheel) em dist/ e verifica os metadados
 	$(PYTHON) -m twine check --strict dist/*
 
 clean:  ## Remove arquivos gerados
-	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov docs/_build docs/source/tutoriais tutorial_latex/build \
-		paper/joss/paper.pdf paper/joss/paper.jats
+	rm -rf build dist src/*.egg-info .pytest_cache .ruff_cache .coverage coverage.xml htmlcov docs/_build docs/source/tutoriais tutorial_latex/build
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +

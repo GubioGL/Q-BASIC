@@ -1,14 +1,13 @@
 # benchmarks — medições de desempenho
 
-Medições de tempo do Q-BASIC. Os resultados alimentam a seção de desempenho do artigo
-(pasta `paper/`).
+Medições de tempo do Q-BASIC.
 
 | Arquivo | O que faz |
 |---|---|
 | [`bench_nucleo.py`](bench_nucleo.py) | Mede operações do núcleo (valor esperado, potência, Hamiltoniano esparso, solver, estado coerente, `repr`). Usa só a API comum às versões 0.0.x e 0.1.x. |
 | [`comparar_versoes.py`](comparar_versoes.py) | Roda `bench_nucleo.py` com uma versão antiga (extraída de um commit) e com a atual, e gera a tabela de antes × depois. |
 | [`resultados.md`](resultados.md) | Última tabela gerada. |
-| [`resultados.json`](resultados.json) | As mesmas medições em JSON (usadas nas figuras e na tabela do artigo). |
+| [`resultados.json`](resultados.json) | As mesmas medições em JSON, para uso em outros scripts. |
 | [`teste_gpu_pytorch.ipynb`](teste_gpu_pytorch.ipynb) | Teste exploratório de multiplicação de matrizes com PyTorch na CPU e na GPU. |
 
 ## Como rodar

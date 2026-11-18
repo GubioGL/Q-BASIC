@@ -1,11 +1,7 @@
 # Plano de trabalho — reestruturação do Q-BASIC
 
-> **Status (09/11/2026):** Fases 1 a 10 concluídas (versão 0.1.0 pronta, ainda não
+> **Status (18/11/2026):** Fases 1 a 9 concluídas (versão 0.1.0 pronta, ainda não
 > publicada no PyPI). Falta a Fase 11 (acabamento).
-> O projeto tem dois produtos: o **livro** (curso que ensina a construir um simulador
-> quântico) e a **biblioteca** (produto final das aulas), descrita no **artigo para o
-> JOSS**. O artigo em português foi removido; o que falta para submeter está em
-> `paper/JOSS.md`.
 > Para executar, é só pedir pelo número: *"faça a Fase 1"*, *"faça os itens 4.1 a 4.5"*,
 > *"responda D3 com a opção B"*. Vou marcando `[x]` conforme cada item for concluído.
 
@@ -96,7 +92,7 @@ da versão antiga, antes da reestruturação.
 | D4 | Pacote BRa | Retirado do README como pacote existente; agora aparece no **Roadmap**. ✅ |
 | D5 | Backends PyTorch/CuPy/Numba | Dependência opcional (`pip install "Q-BASIC[gpu]"`) e roadmap. ✅ |
 | D6 | Idioma da documentação | **Português** primeiro. |
-| D7 | Paper | **Só o JOSS** (`paper.md`, inglês), sobre a biblioteca; o artigo em português (RBEF) foi descartado. O livro vai para o arXiv. Como o JOSS ainda não é possível (falta uso em pesquisa e histórico distribuído), o plano é: DOI no Zenodo + preprint da biblioteca no arXiv agora e JOSS depois (ver `paper/JOSS.md`, seção 9). Autor único: **Gubio Gomes de Lima**; afiliação em branco por enquanto. |
+| D7 | Paper | **Removido do projeto.** Não haverá artigo. |
 | D8 | Licença | **MIT** (`LICENSE` criado). ✅ |
 | D9 | Python mínimo | **3.10+**, testado de 3.10 a 3.14. Obs.: o Python 3.10 chegou ao fim do suporte em out/2026; vale subir o mínimo para 3.11 numa versão futura. ✅ |
 | D10 | Layout do pacote | **`src/qbasic/`**. ✅ |
@@ -116,8 +112,7 @@ Q-BASIC/
 │   │   ├── testes.yml           # ✅ pytest + lint em TODO push e pull request
 │   │   ├── publicar.yml         # ✅ publica no PyPI ao criar release
 │   │   ├── docs.yml             # ✅ gera o site HTML e publica no GitHub Pages
-│   │   ├── tutorial-pdf.yml     # (opcional) gera o PDF do tutorial LaTeX
-│   │   └── paper.yml            # (opcional) compila o paper
+│   │   └── tutorial-pdf.yml     # (opcional) gera o PDF do tutorial LaTeX
 │   ├── dependabot.yml           # ✅ atualiza as versões das Actions
 │   ├── ISSUE_TEMPLATE/          # modelos de bug report / pedido de funcionalidade
 │   └── pull_request_template.md
@@ -142,12 +137,11 @@ Q-BASIC/
 ├── tutorial_latex/              # ✅ modelo LaTeX do livro + saída gerada (build/ ignorado no git)
 ├── scripts/
 │   └── gerar_tutorial_latex.py  # ✅ notebooks → livro LaTeX/PDF
-├── paper/                       # ✅ artigo do JOSS (joss/), guia JOSS.md e gerar_figuras.py
 ├── exemplos/                    # scripts prontos (ex.: Jaynes-Cummings, vindo de Testes/)
-├── benchmarks/                  # medições de desempenho (alimentam o paper)
+├── benchmarks/                  # medições de desempenho
 ├── pyproject.toml               # ✅ substitui o setup.py
 ├── MANIFEST.in                  # ✅ inclui tests/ e exemplos/ no pacote-fonte
-├── Makefile                     # atalhos: make test, make docs, make tutorial, make paper
+├── Makefile                     # atalhos: make test, make docs, make livro
 ├── README.md, LICENSE, CITATION.cff, CHANGELOG.md, CONTRIBUTING.md
 └── .gitignore, .pre-commit-config.yaml
 ```
@@ -168,7 +162,7 @@ A ordem importa: **os testes vêm antes da refatoração**, para garantir que na
 - [x] 1.7 `Bra.png` movido para `docs/source/_static/`; README atualizado (badges, instalação, estrutura, contato, BRa no roadmap).
 - [x] 1.8 `Testes/*.py` → `exemplos/jaynes_cummings.py` e `exemplos/jaynes_cummings_esparso.py` (com docstring e READMEs); `testGPU.ipynb` → `benchmarks/teste_gpu_pytorch.ipynb`.
 - [x] 1.9 `ruff` (lint + formatação, linha de 100) e `pre-commit`. Código formatado; os bugs B13 e B19 ficaram marcados com `# noqa` até a Fase 4. Notebooks fora do lint até a Fase 7.
-- [x] 1.10 `Makefile` com `help`, `install`, `install-dev`, `test`, `cov`, `lint`, `format`, `build`, `clean`. (`docs`, `tutorial` e `paper` entram nas fases 8, 9 e 10.)
+- [x] 1.10 `Makefile` com `help`, `install`, `install-dev`, `test`, `cov`, `lint`, `format`, `build`, `clean`. (`docs` e `livro` entram nas fases 8 e 9.)
 
 ### Fase 2 — Testes unitários (pytest)
 Testes baseados em **resultados físicos conhecidos**, que continuam válidos depois da refatoração:
@@ -247,20 +241,12 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 - [x] 9.5 `tests/test_livro.py`: funções de conversão e geração de um livro pequeno, incluindo a compilação do PDF quando há XeLaTeX.
 - [x] 9.6 Workflow **Livro dos tutoriais** (`livro.yml`): gera o PDF quando os tutoriais ou o modelo mudam, guarda nos *Artifacts* e **anexa o PDF a cada release**.
 
-### Fase 10 — Paper / artigo científico (`paper/`)
-- [x] 10.1 Estrutura: `paper/joss/` (`paper.md`, `paper.bib`, figura), `paper/gerar_figuras.py`, `paper/README.md` e o guia `paper/JOSS.md`. *(O artigo em português em LaTeX foi feito e depois removido, a seu pedido.)*
-- [x] 10.2 Artigo do JOSS em inglês (~1650 palavras) com todas as seções obrigatórias: Summary, Statement of need, State of the field (com a justificativa "build vs. contribute"), Software design, Research impact statement, AI usage disclosure, Acknowledgements e References (19 referências conferidas com o pandoc).
-- [x] 10.3 `paper/gerar_figuras.py` refaz a figura do artigo (decoerência do gato de Schrödinger) a partir da própria biblioteca.
-- [x] 10.4 Workflow **Artigo** (`paper.yml`): refaz a figura e gera o PDF com a ferramenta oficial do JOSS; o PDF fica nos *Artifacts*. Localmente: `make artigo` (Docker).
-- [x] 10.5 Guia `paper/JOSS.md`: pontos obrigatórios do artigo, portões da pré-avaliação, checklist dos revisores com o status do repositório, como justificar o artigo e o que investir antes de submeter.
-- [ ] 10.6 **Você:** preencher os `TODO` do `paper.md` (ORCID, afiliação, **impacto em pesquisa**, modelo/versão da IA, agradecimentos/financiamento) e cumprir os requisitos do `paper/JOSS.md` antes de submeter.
-
 ### Fase 11 — Acabamento profissional
-- [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais/paper, como citar.
+- [ ] 11.1 *(parcial: badges, instalação e estrutura já atualizados na Fase 1)* README novo: badges (testes, cobertura, docs, Python, licença), instalação real, exemplo que funciona, links para docs/tutoriais, como citar.
 - [x] 11.2 `CITATION.cff` (botão "Cite this repository" do GitHub) — criado na Fase 8, com a página "Como citar".
 - [ ] 11.3 `CHANGELOG.md` ✅ (criado na Fase 5, com o guia de migração) e `CONTRIBUTING.md` (como rodar testes, estilo de código, como abrir PR).
 - [ ] 11.4 Modelos de issue e de pull request.
-- [ ] 11.4b Exigências do JOSS para boas práticas: `CODE_OF_CONDUCT.md`, onde pedir suporte (issues/Discussions/e-mail) e uma frase de governança (ver `paper/JOSS.md`).
+- [ ] 11.4b Código de conduta (`CODE_OF_CONDUCT.md`), onde pedir suporte (issues/Discussions/e-mail) e uma frase de governança.
 - [x] 11.5 `publicar.yml`: ao publicar uma release no GitHub, roda todos os testes, confere se a tag bate com a versão, gera o pacote e envia ao PyPI (*Trusted Publishing*, sem senha no repositório). Guia em `docs/source/desenvolvimento/publicacao.md`. ⚠️ **Você precisa fazer a configuração única no PyPI** (passo a passo no guia).
 - [ ] 11.6 (opcional, você faz no site) ligar o repositório ao **Zenodo** para ter DOI a cada release.
 - [ ] 11.7 Apagar este `PLANO_DE_TRABALHO.md` (ou movê-lo para `docs/`) quando tudo estiver concluído.
@@ -276,7 +262,7 @@ Testes baseados em **resultados físicos conhecidos**, que continuam válidos de
 | 3 ✅ | Fase 4 → Fase 5 | Corrigir e otimizar com os testes garantindo a física. |
 | 4 ✅ | Fase 6 (se quiser) | Novas funcionalidades sobre uma base estável. |
 | 5 ✅ | Fase 7 → Fase 8 → Fase 9 | Tutoriais atualizados alimentam o site e o livro LaTeX. |
-| 6 | Fase 10 ✅ → Fase 11 | O paper usa os benchmarks e os tutoriais; o acabamento fecha a versão 0.1.0. |
+| 6 | Fase 11 | O acabamento fecha a versão 0.1.0. |
 
 Cada fase vira um ou mais commits na branch `claude/vibrant-faraday-ucinuf`, com os testes passando antes de seguir para a próxima.
 
@@ -289,4 +275,3 @@ Cada fase vira um ou mais commits na branch `claude/vibrant-faraday-ucinuf`, com
 - Python Packaging User Guide (PyPA) — https://packaging.python.org/
 - pyOpenSci Python Package Guide — https://www.pyopensci.org/python-package-guide/
 - QuTiP (referência de API para simulação quântica em Python) — https://qutip.org/
-- Journal of Open Source Software — https://joss.readthedocs.io/

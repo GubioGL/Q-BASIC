@@ -23,14 +23,3 @@ repos:
       - id: ruff-check
         args: ["--fix"]
       - id: ruff-format
-
-  - repo: local
-    hooks:
-      # Regenera paper/overleaf/ (paper.tex + zip) e o adiciona ao próprio commit
-      # quando o artigo ou o gerador mudam. Precisa de ".[dev]" (traz o pandoc).
-      - id: artigo-overleaf
-        name: artigo para o Overleaf
-        entry: python paper/gerar_overleaf.py --adicionar-ao-git
-        language: system
-        pass_filenames: false
-        files: ^paper/(joss/|gerar_overleaf\.py)

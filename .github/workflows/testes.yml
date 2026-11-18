@@ -27,8 +27,7 @@ jobs:
       - name: Rodar os hooks do pre-commit em todos os arquivos
         run: |
           python -m pip install --upgrade pip
-          # ".[livro]" traz o pandoc, usado pelo hook do Overleaf
-          python -m pip install -e ".[livro]" pre-commit
+          python -m pip install pre-commit
           pre-commit run --all-files --show-diff-on-failure
 
   testes:

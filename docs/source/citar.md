@@ -13,5 +13,3 @@ em APA e BibTeX.
   url     = {https://github.com/GubioGL/Q-BASIC}
 }
 ```
-
-Um artigo descrevendo a biblioteca está em preparação.

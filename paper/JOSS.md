@@ -173,6 +173,8 @@ O JOSS permite IA, mas exige uma declaração completa. Omitir ou ser vago é tr
   ferramenta oficial do JOSS a cada mudança em `paper/`. O PDF fica nos *Artifacts* da
   execução.
 - Localmente, com Docker: `make artigo`.
+- Para editar no Overleaf: `paper/overleaf/q-basic-overleaf.zip`, gerado a cada commit
+  (ou `make overleaf`). Ver [`paper/README.md`](README.md#overleaf).
 
 ## 9. Plano de publicação e alternativas ao JOSS
 

@@ -31,9 +31,14 @@ jobs:
       - name: Instalar o pacote com o matplotlib
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e ".[plot]"
+          python -m pip install -e ".[plot,livro]"
       - name: Gerar a figura a partir da biblioteca
         run: python paper/gerar_figuras.py
+      - name: Conferir se o Overleaf está atualizado
+        run: |
+          python paper/gerar_overleaf.py
+          git diff --exit-code -- paper/overleaf || \
+            (echo "paper/overleaf desatualizado: rode make overleaf e faça commit" && exit 1)
       - name: Gerar o rascunho com a ferramenta do JOSS
         uses: openjournals/openjournals-draft-action@master
         with:

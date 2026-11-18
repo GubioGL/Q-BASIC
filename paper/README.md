@@ -16,6 +16,8 @@ Esta pasta guarda o **artigo sobre a biblioteca**, em inglês, para o
 | [`joss/paper.bib`](joss/paper.bib) | Referências (BibTeX). |
 | [`joss/figura_qbasic.png`](joss/figura_qbasic.png) | Figura do artigo, gerada pela própria biblioteca. |
 | [`gerar_figuras.py`](gerar_figuras.py) | Script que refaz a figura. |
+| [`overleaf/`](overleaf/) | Artigo em LaTeX para o Overleaf: `paper.tex`, `paper.bib`, figura e `q-basic-overleaf.zip`. |
+| [`gerar_overleaf.py`](gerar_overleaf.py) | Script que gera a pasta `overleaf/` a partir do `paper.md`. |
 
 Autor: Gubio Gomes de Lima.
 
@@ -35,3 +37,15 @@ Os números de desempenho citados no artigo vêm de `benchmarks/` (`make bench`)
   nos *Artifacts* da execução.
 - **Localmente, com Docker:** `make artigo`. Ele roda a imagem `openjournals/inara`,
   a mesma usada pela revista, e grava `paper/joss/paper.pdf`.
+
+## Overleaf
+
+A pasta [`overleaf/`](overleaf/) tem o artigo em LaTeX, pronto para compilar no Overleaf:
+
+1. Baixe [`overleaf/q-basic-overleaf.zip`](overleaf/q-basic-overleaf.zip).
+2. No Overleaf, clique em **New Project → Upload Project** e envie o zip.
+3. Compile com **pdfLaTeX** (padrão). As referências vêm do `paper.bib`.
+
+A pasta é regenerada automaticamente a cada commit que muda `paper/joss/` (hook do
+pre-commit, instalado por `make install-dev`). Para gerar na mão: `make overleaf`.
+O CI confere se a pasta está atualizada e falha caso não esteja.

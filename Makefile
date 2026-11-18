@@ -3,7 +3,7 @@
 
 PYTHON ?= python
 
-.PHONY: help install install-dev test doctest bench tutoriais livro artigo docs cov lint format build clean
+.PHONY: help install install-dev test doctest bench tutoriais livro artigo overleaf docs cov lint format build clean
 
 help:  ## Mostra esta ajuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "} {printf "  %-12s %s\n", $$1, $$2}'
@@ -34,6 +34,9 @@ artigo:  ## Gera a figura e o PDF do artigo do JOSS (precisa de ".[plot]" e Dock
 	$(PYTHON) paper/gerar_figuras.py
 	docker run --rm --volume "$(CURDIR)/paper/joss":/data --user $$(id -u):$$(id -g) \
 		--env JOURNAL=joss openjournals/inara
+
+overleaf:  ## Gera paper/overleaf/ (paper.tex e zip para o Overleaf; precisa de ".[livro]")
+	$(PYTHON) paper/gerar_overleaf.py
 
 docs:  ## Gera o site de documentação em docs/_build/html (precisa de ".[docs]")
 	MPLBACKEND=Agg $(PYTHON) -m sphinx -W --keep-going -b html docs/source docs/_build/html

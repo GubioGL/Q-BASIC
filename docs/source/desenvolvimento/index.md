@@ -43,6 +43,7 @@ pre-commit install             # verificações automáticas a cada commit
 | `make docs` | gera este site em `docs/_build/html` (precisa de `".[docs]"`) |
 | `make livro` | gera o livro dos tutoriais em LaTeX/PDF (precisa de `".[livro]"` e XeLaTeX) |
 | `make artigo` | gera a figura e o PDF do artigo do JOSS (precisa de `".[plot]"` e Docker) |
+| `make overleaf` | gera `paper/overleaf/` (`paper.tex` e zip para o Overleaf; precisa de `".[livro]"`) |
 | `make bench` | compara o desempenho com a versão anterior à reestruturação |
 | `make build` | gera o pacote (`dist/`) e confere os metadados |
 

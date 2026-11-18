@@ -26,6 +26,7 @@ import re
 import shutil
 import subprocess
 import sys
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -107,8 +108,35 @@ def bloco_codigo(fonte: str) -> str:
     return f"{marca}python\n{fonte.rstrip()}\n{marca}\n"
 
 
+# Símbolos que aparecem nas saídas impressas. Os blocos de saída são Verbatim, que não
+# aceita comandos LaTeX, então trocamos cada um por um nome ASCII legível.
+_SIMBOLOS_SAIDA = {
+    "⊗": "(x)",
+    "√": "sqrt",
+    "⟨": "<",
+    "⟩": ">",
+    "²": "^2",
+    "º": "o",
+    "†": "+",
+}
+
+
+def simbolos_para_saida(texto: str) -> str:
+    """Troca letras gregas e símbolos matemáticos por nomes ASCII (ex.: ``|Φ+>``, ``ψ``)."""
+    saida = []
+    for ch in texto:
+        if ch in _SIMBOLOS_SAIDA:
+            saida.append(_SIMBOLOS_SAIDA[ch])
+        elif "\u0370" <= ch <= "\u03ff":  # bloco grego
+            nome = unicodedata.name(ch, "").split()[-1].lower()
+            saida.append(nome.capitalize() if ch.isupper() else nome)
+        else:
+            saida.append(ch)
+    return "".join(saida)
+
+
 def bloco_saida(texto: str, erro: bool = False, max_linhas: int = MAX_LINHAS_SAIDA) -> str:
-    texto = _ANSI.sub("", texto).rstrip()
+    texto = simbolos_para_saida(_ANSI.sub("", texto).rstrip())
     linhas = texto.split("\n")
     if len(linhas) > max_linhas:
         omitidas = len(linhas) - max_linhas

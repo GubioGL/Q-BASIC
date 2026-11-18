@@ -38,3 +38,18 @@
 
 % Mais folga para justificar parágrafos com nomes de funções longos (\texttt{...}).
 \setlength{\emergencystretch}{3em}
+
+% Símbolos Unicode que o pdfLaTeX não conhece (aparecem em código e em texto). Só no pdfLaTeX:
+% o XeLaTeX e o LuaLaTeX já leem Unicode direto.
+\ifPDFTeX
+  \DeclareUnicodeCharacter{03C8}{\ensuremath{\psi}}
+  \DeclareUnicodeCharacter{03A6}{\ensuremath{\Phi}}
+  \DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
+  \DeclareUnicodeCharacter{03B8}{\ensuremath{\theta}}
+  \DeclareUnicodeCharacter{03BA}{\ensuremath{\kappa}}
+  \DeclareUnicodeCharacter{2297}{\ensuremath{\otimes}}
+  \DeclareUnicodeCharacter{221A}{\ensuremath{\surd}}
+  \DeclareUnicodeCharacter{27E8}{\ensuremath{\langle}}
+  \DeclareUnicodeCharacter{27E9}{\ensuremath{\rangle}}
+  \DeclareUnicodeCharacter{2020}{\ensuremath{\dagger}}
+\fi

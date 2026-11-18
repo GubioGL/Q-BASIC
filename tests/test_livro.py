@@ -192,3 +192,11 @@ def test_gera_o_livro(livro, tmp_path):
     if shutil.which("xelatex"):
         pdf = livro.compilar_pdf(tex)
         assert pdf.exists()
+
+
+def test_simbolos_das_saidas_viram_ascii(livro):
+    simbolos_para_saida = livro.simbolos_para_saida
+    assert simbolos_para_saida("|Φ+>: 1.0") == "|Phi+>: 1.0"
+    assert simbolos_para_saida("<Z⊗Z> = ψ") == "<Z(x)Z> = psi"
+    assert simbolos_para_saida("|α|² = 4") == "|alpha|^2 = 4"
+    assert simbolos_para_saida("ação") == "ação"  # acentos do português continuam

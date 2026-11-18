@@ -26,6 +26,7 @@ import re
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
@@ -275,6 +276,24 @@ def gerar(
     return tex
 
 
+def gerar_zip_overleaf(saida: Path) -> Path:
+    """Empacota o livro para o Overleaf: tutorial.tex, figuras/ e o logo.
+
+    Os arquivos entram com data fixa, então o zip só muda quando o conteúdo muda.
+    Compile no Overleaf com XeLaTeX (Menu → Compiler).
+    """
+    saida = Path(saida)
+    zip_path = saida / "q-basic-livro-overleaf.zip"
+    figuras = sorted((saida / "figuras").glob("*.png"))
+    arquivos = [saida / "tutorial.tex", saida / LOGO.name, *figuras]
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for arquivo in arquivos:
+            info = zipfile.ZipInfo(str(arquivo.relative_to(saida)), date_time=(1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            zf.writestr(info, arquivo.read_bytes())
+    return zip_path
+
+
 def compilar_pdf(tex: Path) -> Path:
     """Compila com XeLaTeX (via latexmk, se existir)."""
     if shutil.which("latexmk"):
@@ -302,6 +321,7 @@ def main(argv: list[str] | None = None) -> None:
 
     tex = gerar(args.indice, args.saida)
     print(f"LaTeX gerado: {tex}")
+    print(f"Zip para o Overleaf: {gerar_zip_overleaf(args.saida)}")
     if args.pdf:
         print(f"PDF gerado:   {compilar_pdf(tex)}")
 
